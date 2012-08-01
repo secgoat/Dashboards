@@ -1,0 +1,159 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using ClosedXML.Excel;
+
+namespace ProviderDashboards.metrics
+{
+    class PreventiveMetric
+    {
+        List<XLWorkbook> workbooks;
+        XLWorkbook workbook;
+        List<Point> metricDataLocations = new List<Point>(); // where is it located in the array
+        List<object> metrics = new List<object>(); // this is the actuall contnets of the metrics locations
+        List<String> metricNames = new List<String>();
+        String provider;
+        Dictionary<Point, String> dashboardMetrics = new Dictionary<Point, String>();
+        List<object[,]> metricsArrays;
+
+        public List<object> Metrics { get { return metrics; } set{ return;  } }
+
+        public PreventiveMetric(String provider, List<XLWorkbook> workbooks)
+        {
+            this.provider = provider;
+            this.workbooks = workbooks;
+            setmetricNames();
+            findProvderName();
+        }
+
+        /// <summary>
+        /// make  list of metrics names so we can match provider
+        /// and then metric to get the x,y location of metrics that need to be moved across
+        /// </summary>
+        private void setmetricNames()
+        {
+            /* the array of files goes like this:
+             * 0: Advanced Directives
+             * 1: CHD BMI
+             * 2: CHD BMI
+             * 3: Breast Cancer
+             * 4: Cervical Cancer
+             * 5: Colon Cancer
+             * 6: pneumococcal
+             */
+            metricNames.Add("Total # of patients with an Advance Directive on File: "); //percent (x+3) ADVANCED DIRECTIVES 
+
+            metricNames.Add("Total # of eligible patients with a documented BMI percentile >= 85 within the past year: ");//percent (y+14) BMI
+            metricNames.Add("Total # of  of patients with a BMI percentile >= 85 who received 5-2-1-0 counseling: ");//percent (x+14) BMI
+            
+            metricNames.Add("Total # of eligible patients with a mammogram done in the past 2 years: ");//percent (x+12) BREAST
+           
+            metricNames.Add("Percent: "); //precent (x+1) CERVICAL
+            
+            metricNames.Add("Percent: "); //percent (x+1) COLON
+            
+            metricNames.Add("# of patients 65+ years of age who received pneumococcal immunization within their lifetime: ");//percent(x+14) PNEUMOCOCOAL
+            
+            
+        }
+
+        private void findProvderName()
+        {
+            Point providerLocation = new Point(0, 0);
+            //int fileNumber = 0;
+            for (int fileNumber = 0; fileNumber < workbooks.Count; fileNumber++)
+            {
+                workbook = workbooks[fileNumber];
+                var sheet = workbook.Worksheet(1);
+                var colRange = sheet.Range("A:A");
+                foreach (var cell in colRange.CellsUsed())
+                {
+                    if (cell.Value != null)
+                    {
+                        String value = (String)cell.Value;
+                        int cellRow = cell.Address.RowNumber;
+                        if (value.Contains(provider))
+                        {
+                            providerLocation = new Point(1, cellRow);
+                            setMetricDataLocations(providerLocation, fileNumber);
+                            continue;
+                        }
+                    }
+
+                }
+            }
+            System.DateTime now = DateTime.Today;
+            metrics.Insert(0, now.Month +"-" + now.Year);
+           
+        }
+
+
+        private void setMetricDataLocations(Point providerLocation, int fileNumber)
+        {
+
+            var sheet = workbook.Worksheet(1);
+            String metricName = ""; //use this to match the cell from worksheet on which to grab the metrics data
+            int xOffset = 0; //use this to tell the program how many cells on x to move over to find desired data
+            //start the actual retrieval of data here
+            switch (fileNumber)
+            {
+                case 0:
+                    metricName = metricNames[0];
+                    xOffset = 3;
+                    break;
+                case 1:
+                    metricName = metricNames[1];
+                    xOffset = 14;
+                    break;
+                case 2:
+                    metricName = metricNames[2];
+                    xOffset = 14;
+                    break;
+                case 3:
+                    metricName = metricNames[3];
+                    xOffset = 11;
+                    break;
+                case 4:
+                    metricName = metricNames[4];
+                    xOffset = 1;
+                    break;
+                case 5:
+                    metricName = metricNames[5];
+                    xOffset = 1;
+                    break;
+                case 6:
+                    metricName = metricNames[6];
+                    xOffset = 14;
+                    break;
+            }
+
+            var providerRow = sheet.Row(providerLocation.Y); //get the location row of the matched provider name
+            var curRow = providerRow; // use this as an iteratior to step trouhh the rows below provder row
+            int lastRow = sheet.LastRowUsed().RowNumber(); //BAM! find the last row used
+            var lastCell = curRow.LastCellUsed(); //last cell gets set to nnull sometimes?
+
+            while (lastCell == null)
+            {
+                curRow = curRow.RowBelow();
+                lastCell = curRow.LastCellUsed();
+            }
+            for (int r = curRow.RowNumber(); r < lastRow; r++)
+            {
+                lastCell = curRow.LastCellUsed();
+                for (int c = 1; c < lastCell.Address.ColumnNumber; c++)//this does too many, maybe just search for the next 10 rows?
+                {
+                    var firp = curRow.Cell(c).Value;
+                    if (firp.ToString() == metricName)
+                    {
+                        firp = curRow.Cell(c + xOffset).Value;
+                        metrics.Add(firp);
+                        break;
+                    }
+                   // sheetValue[r, c] = firp;
+                 }
+                curRow = curRow.RowBelow();
+            }
+        }
+    }
+}

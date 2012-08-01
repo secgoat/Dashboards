@@ -1,0 +1,17 @@
+C:\Users\jtilson\AppData\Local\Temporary Projects\ProviderDashboards\bin\Debug\ProviderDashboards.exe
+C:\Users\jtilson\AppData\Local\Temporary Projects\ProviderDashboards\bin\Debug\ProviderDashboards.pdb
+C:\Users\jtilson\AppData\Local\Temporary Projects\ProviderDashboards\obj\x86\Debug\ProviderDashboards.Properties.Resources.resources
+C:\Users\jtilson\AppData\Local\Temporary Projects\ProviderDashboards\obj\x86\Debug\ProviderDashboards.csproj.GenerateResource.Cache
+C:\Users\jtilson\AppData\Local\Temporary Projects\ProviderDashboards\obj\x86\Debug\ProviderDashboards.exe
+C:\Users\jtilson\AppData\Local\Temporary Projects\ProviderDashboards\obj\x86\Debug\ProviderDashboards.pdb
+C:\Users\jtilson\AppData\Local\Temporary Projects\ProviderDashboards\obj\x86\Debug\ProviderDashboards.ProviderDashboards.resources
+C:\Users\jtilson\Documents\Visual Studio 2010\Projects\ProviderDashboards\obj\x86\Debug\ProviderDashboards.exe
+C:\Users\jtilson\Documents\Visual Studio 2010\Projects\ProviderDashboards\obj\x86\Debug\ProviderDashboards.pdb
+C:\Users\jtilson\Documents\Visual Studio 2010\Projects\ProviderDashboards\bin\Debug\ProviderDashboards.exe
+C:\Users\jtilson\Documents\Visual Studio 2010\Projects\ProviderDashboards\bin\Debug\ProviderDashboards.pdb
+C:\Users\jtilson\Documents\Visual Studio 2010\Projects\ProviderDashboards\obj\x86\Debug\ProviderDashboards.ProviderDashboards.resources
+C:\Users\jtilson\Documents\Visual Studio 2010\Projects\ProviderDashboards\obj\x86\Debug\ProviderDashboards.Properties.Resources.resources
+C:\Users\jtilson\Documents\Visual Studio 2010\Projects\ProviderDashboards\obj\x86\Debug\ProviderDashboards.csproj.GenerateResource.Cache
+C:\Users\jtilson\Documents\Visual Studio 2010\Projects\ProviderDashboards\obj\x86\Debug\ProviderDashboards.csprojResolveAssemblyReference.cache
+C:\Users\jtilson\Documents\Visual Studio 2010\Projects\ProviderDashboards\bin\Debug\ClosedXML.dll
+C:\Users\jtilson\Documents\Visual Studio 2010\Projects\ProviderDashboards\bin\Debug\ClosedXML.xml

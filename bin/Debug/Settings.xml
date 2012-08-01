@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Settings>
+  <DataLocations>
+    <MetricsFolder>C:\Users\jtilson\Desktop\Metrics</MetricsFolder>
+    <DashboardFile>C:\Users\jtilson\Desktop\Metrics\Dashboard\Provider Dashboards.xlsx</DashboardFile>
+  </DataLocations>
+  <Providers>
+    <Name>Loren Solnit, MD</Name>
+    <Name>Charles Wolcott, MD</Name>
+    <Name>Jessica Thibodeau, APRN</Name>
+    <Name>Barbara Ford, APRN</Name>
+    <Name>Jill Blumberg, MD</Name>
+    <Name>Philip Lawson, MD</Name>
+    <Name>Aaron Solnit, MD</Name>
+    <Name>Alexandria Noble, APRN</Name>
+    <Name>Caitlin O'Donnell, MD</Name>
+    <Name>Danielle Beaulieu, PA</Name>
+    <Name>Evelyn Hagan, APRN</Name>
+    <Name>Nicole Fischler, APRN</Name>
+    <Name>Sarah Young-Xu, MD</Name>
+    <Name>David Nelson</Name>
+  </Providers>
+</Settings>
