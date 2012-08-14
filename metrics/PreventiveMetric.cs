@@ -53,7 +53,7 @@ namespace ProviderDashboards.metrics
             
             metricNames.Add("Percent: "); //percent (x+1) COLON
             
-            metricNames.Add("# of patients 65+ years of age who received pneumococcal immunization within their lifetime: ");//percent(x+14) PNEUMOCOCOAL
+            metricNames.Add("# of patients 65+ years of age who received pneumococcal immunization within their lifetime:");//percent(x+14) PNEUMOCOCOAL
             
             
         }
@@ -84,7 +84,8 @@ namespace ProviderDashboards.metrics
                 }
             }
             System.DateTime now = DateTime.Today;
-            metrics.Insert(0, now.Month +"-" + now.Year);
+            metrics.Insert(0, now);
+            //metrics.Insert(0, now.Month +"-" + now.Year);
            
         }
 
@@ -112,7 +113,7 @@ namespace ProviderDashboards.metrics
                     break;
                 case 3:
                     metricName = metricNames[3];
-                    xOffset = 11;
+                    xOffset = 12;
                     break;
                 case 4:
                     metricName = metricNames[4];
@@ -147,10 +148,10 @@ namespace ProviderDashboards.metrics
                     if (firp.ToString() == metricName)
                     {
                         firp = curRow.Cell(c + xOffset).Value;
-                        metrics.Add(firp);
-                        break;
+                        double percentValue = (double)firp / 100;
+                        metrics.Add(percentValue);
+                        return;
                     }
-                   // sheetValue[r, c] = firp;
                  }
                 curRow = curRow.RowBelow();
             }

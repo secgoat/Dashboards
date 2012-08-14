@@ -129,22 +129,23 @@ namespace ProviderDashboards
 
         private void updateDashboardsButton_Click(object sender, EventArgs e)
         {
-           /* Thread thread = new Thread(DashboardUpdate);
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
-            thread.Join(); */
-            /* move this top some where else to change the excel files automagically
-             * UpdateMetricsToXLSX change = new UpdateMetricsToXLSX();
-             *   change.Convert(dataLocations[0]);
-             */ 
-            
             update._openExcel(dataLocations[1], dataLocations[0]);
-            
         }
 
         private void DashboardUpdate()
         {
             update._openExcel(dataLocations[1], dataLocations[0]);
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void updateMetrics_Click(object sender, EventArgs e)
+        {
+            UpdateMetricsToXLSX change = new UpdateMetricsToXLSX();
+            change.Convert(dataLocations[0]);
         }
     }
 }

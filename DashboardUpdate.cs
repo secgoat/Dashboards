@@ -26,29 +26,7 @@ namespace ProviderDashboards
         
         private List<String> providers;
         
-        private enum MetricsTitles
-        {
-            Asthma,
-            AsthmaLeukotriene,
-            CardiovascularCare,
-            CardiovascularMeasureBP,
-            Depression5PointCSD,
-            DepressionMajorCSD1Year,
-            DepressionFU_PHQ_CSD,
-            DepressionCareManagementMetrics,
-            DiabetesCareManagement,
-            DiabetesACEI_ARB,
-            DiabetesHGBA1C,
-            DiabetesDRE,
-            DiabetesStatin,
-            AdvancedDirecttives,
-            CHDPerformanceMeasure3BMIPediatric,
-            BreastCancer,
-            CervicalCancer,
-            ColonCancer,
-            PneumococcalImmu,
-        };
-
+        
         /// <summary>
         /// Constructor
         /// </summary>
@@ -65,6 +43,7 @@ namespace ProviderDashboards
             /// this allows for  us to see if a cell contains that providers names so we can extrapolate the needed data from
             /// there
             /// </summary>
+            providers.Sort();
             for (int i = 0; i < providers.Count; i++ )
             {
                 int index = providers[i].IndexOf(' ');
@@ -131,45 +110,32 @@ namespace ProviderDashboards
             }
             // the following removed for brevity
             //bring it back after i get the data for 1 provider ot work correctly
-            PreventiveMetric preventive = new PreventiveMetric(providers[1], PreventiveFiles);
+            /*PreventiveMetric preventive = new PreventiveMetric(providers[1], PreventiveFiles);
             List<object> metrics = preventive.Metrics;
             var row = providerRows.ElementAt(1).Value;
             for (int x = 1; x < preventive.Metrics.Count; x++)
             {
                 var cell = row.Cell(x);
+                //cell.Style.NumberFormat.NumberFormatId = 0;
                 cell.SetValue(preventive.Metrics.ElementAt(x));
-            } 
-           /* foreach (String provider in providers)
+            } */
+            for(int i = 0; i < providers.Count; i++)
             {
-                PreventiveMetric preventive = new PreventiveMetric(provider, PreventiveFiles);
+                String fileName = metrics_files[3].ToString();
+                PreventiveMetric preventive = new PreventiveMetric(providers[i], PreventiveFiles);
                 List<object> metrics = preventive.Metrics;
-                for (int i = 0; i < providerRows.Count; i++)
+                var row = providerRows.ElementAt(i).Value;
+                for (int x = 1; x < metrics.Count; x++)
                 {
-                    if (providerRows.ElementAt(i).Key.Contains(provider))
-                    {
-                        var row = providerRows.ElementAt(i).Value;
-                        for (int x = 1; x < preventive.Metrics.Count; x++)
-                        {
-                            var cell = row.Cell(x);
-                            cell.SetValue(preventive.Metrics.ElementAt(x));
-                        }
-                    }
-                }*/
-            /*
-            foreach (var pair in providerRows)
-            {
-                if (pair.Key.Contains(provider))
-                {
-                    var row = pair.Value;
-                    for (int i = 1; i < preventive.Metrics.Count; i++)
-                    {
-                        var cell = row.Cell(i);
-                        cell.SetValue(preventive.Metrics.ElementAt(i));
-                    }
-                }
-            }  
-        }*/
-
+                    var cell = row.Cell(x);
+                    if (x == 1) { cell.Style.NumberFormat.NumberFormatId = 17; }//mmm-yy
+                    else { cell.Style.NumberFormat.NumberFormatId = 10; }//0.00%
+                    //cell.Style.NumberFormat.Format = "@";
+                    cell.Style.Font.SetBold(false);
+                    cell.SetValue(preventive.Metrics.ElementAt(x));
+                } 
+            }
+       
             /* this was for asthma having some issues with the asthma one pulling data other than null from worksheets
             List<object[,]> asthmaMetrics = new List<object[,]>() { metricsList[1], metricsList[2] };
             
@@ -293,9 +259,12 @@ namespace ProviderDashboards
                             //have to do the following because the depression sheet on dashboard does not follow same conventionm as others
                             if (_worksheet == _dashboard.Worksheet(2) && value.Contains("Agency"))
                             {
-                                newRow = _worksheet_range.Row(i + 3);
+                                newRow = _worksheet_range.Row(i + 2);
                                 newRow.InsertRowsBelow(1);
-                                i++;
+                                var blankRow = _worksheet_range.Row(i + 3);
+                                blankRow.Style.NumberFormat.NumberFormatId = 0;
+                                providerRows.Add(value, blankRow);
+                               // i++;
                                 lastValue = value;
                                 continue;
                             }
@@ -303,10 +272,14 @@ namespace ProviderDashboards
                              if (value == "Month")
                              {
 
-                                 newRow = _worksheet_range.Row(i + 2);
-                                 newRow.InsertRowsBelow(1);
-                                 providerRows.Add(lastValue, newRow);
-                                 i++;
+                                 newRow = _worksheet_range.Row(i + 1);//this gets us int he right area and then insert the row above
+                                 
+                                 newRow.InsertRowsBelow(1); //try to insert rows after we have metrics and tehn insert metrics into cells then insert row
+                                 var blankRow = _worksheet_range.Row(i + 2);
+                                 blankRow.Style.NumberFormat.NumberFormatId = 0;
+                               //  blankRow.Style.Fill.BackgroundColor = XLColor.Blue;
+                                 providerRows.Add(lastValue, blankRow);
+                                 //i++;
                                  lastValue = value;
                                  continue;
                              }
@@ -319,14 +292,5 @@ namespace ProviderDashboards
                 }
             }
         }
-
-
-        /*public void addData(int row, int col, string data, string format)
-        {
-           _worksheet.Cells[row, col] = data;
-            _workSheet_range.WrapText = true;
-            _workSheet_range.NumberFormat = format;
-
-        } */
     }
 }

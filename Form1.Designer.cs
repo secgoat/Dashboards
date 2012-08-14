@@ -50,34 +50,25 @@
             this.dashboardLocationLabel = new System.Windows.Forms.Label();
             this.metricsLocationLabel = new System.Windows.Forms.Label();
             this.metricstextBox = new System.Windows.Forms.TextBox();
-            this.metricsTab = new System.Windows.Forms.TabPage();
-            this.Diabetes = new System.Windows.Forms.TabControl();
-            this.diabetesTab = new System.Windows.Forms.TabPage();
-            this.listBox2 = new System.Windows.Forms.ListBox();
-            this.diabetesMetrics = new System.Windows.Forms.ListBox();
-            this.depressionTab = new System.Windows.Forms.TabPage();
-            this.asthmaTab = new System.Windows.Forms.TabPage();
-            this.cardiovascularTab = new System.Windows.Forms.TabPage();
-            this.preventiveTab = new System.Windows.Forms.TabPage();
             this.metricsFolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.dashboardFolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.loadDashboardDialog = new System.Windows.Forms.OpenFileDialog();
-            this.diabetesMetricsLabel = new System.Windows.Forms.Label();
+            this.updateMetrics = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.MainForm.SuspendLayout();
             this.MainPage.SuspendLayout();
             this.SettingsPage.SuspendLayout();
             this.providersBox.SuspendLayout();
             this.DataLocationBox.SuspendLayout();
-            this.metricsTab.SuspendLayout();
-            this.Diabetes.SuspendLayout();
-            this.diabetesTab.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // MainForm
             // 
             this.MainForm.Controls.Add(this.MainPage);
             this.MainForm.Controls.Add(this.SettingsPage);
-            this.MainForm.Controls.Add(this.metricsTab);
             this.MainForm.Location = new System.Drawing.Point(1, 2);
             this.MainForm.Name = "MainForm";
             this.MainForm.SelectedIndex = 0;
@@ -86,7 +77,8 @@
             // 
             // MainPage
             // 
-            this.MainPage.Controls.Add(this.updateDashboardsButton);
+            this.MainPage.Controls.Add(this.groupBox2);
+            this.MainPage.Controls.Add(this.groupBox1);
             this.MainPage.Controls.Add(this.createDashboardsButton);
             this.MainPage.Location = new System.Drawing.Point(4, 22);
             this.MainPage.Name = "MainPage";
@@ -98,9 +90,9 @@
             // 
             // updateDashboardsButton
             // 
-            this.updateDashboardsButton.Location = new System.Drawing.Point(172, 125);
+            this.updateDashboardsButton.Location = new System.Drawing.Point(6, 35);
             this.updateDashboardsButton.Name = "updateDashboardsButton";
-            this.updateDashboardsButton.Size = new System.Drawing.Size(190, 41);
+            this.updateDashboardsButton.Size = new System.Drawing.Size(75, 23);
             this.updateDashboardsButton.TabIndex = 1;
             this.updateDashboardsButton.Text = "Update Dashboards";
             this.updateDashboardsButton.UseVisualStyleBackColor = true;
@@ -108,7 +100,7 @@
             // 
             // createDashboardsButton
             // 
-            this.createDashboardsButton.Location = new System.Drawing.Point(172, 172);
+            this.createDashboardsButton.Location = new System.Drawing.Point(13, 597);
             this.createDashboardsButton.Name = "createDashboardsButton";
             this.createDashboardsButton.Size = new System.Drawing.Size(190, 41);
             this.createDashboardsButton.TabIndex = 0;
@@ -299,112 +291,40 @@
             this.metricstextBox.TabIndex = 8;
             this.metricstextBox.Text = " ";
             // 
-            // metricsTab
-            // 
-            this.metricsTab.Controls.Add(this.Diabetes);
-            this.metricsTab.Location = new System.Drawing.Point(4, 22);
-            this.metricsTab.Name = "metricsTab";
-            this.metricsTab.Padding = new System.Windows.Forms.Padding(3);
-            this.metricsTab.Size = new System.Drawing.Size(542, 666);
-            this.metricsTab.TabIndex = 2;
-            this.metricsTab.Text = "Metrics";
-            this.metricsTab.UseVisualStyleBackColor = true;
-            // 
-            // Diabetes
-            // 
-            this.Diabetes.Controls.Add(this.diabetesTab);
-            this.Diabetes.Controls.Add(this.depressionTab);
-            this.Diabetes.Controls.Add(this.asthmaTab);
-            this.Diabetes.Controls.Add(this.cardiovascularTab);
-            this.Diabetes.Controls.Add(this.preventiveTab);
-            this.Diabetes.Location = new System.Drawing.Point(3, 3);
-            this.Diabetes.Multiline = true;
-            this.Diabetes.Name = "Diabetes";
-            this.Diabetes.SelectedIndex = 0;
-            this.Diabetes.Size = new System.Drawing.Size(536, 660);
-            this.Diabetes.TabIndex = 0;
-            // 
-            // diabetesTab
-            // 
-            this.diabetesTab.Controls.Add(this.diabetesMetricsLabel);
-            this.diabetesTab.Controls.Add(this.listBox2);
-            this.diabetesTab.Controls.Add(this.diabetesMetrics);
-            this.diabetesTab.Location = new System.Drawing.Point(4, 22);
-            this.diabetesTab.Name = "diabetesTab";
-            this.diabetesTab.Padding = new System.Windows.Forms.Padding(3);
-            this.diabetesTab.Size = new System.Drawing.Size(528, 634);
-            this.diabetesTab.TabIndex = 0;
-            this.diabetesTab.Text = "Diabetes";
-            this.diabetesTab.UseVisualStyleBackColor = true;
-            // 
-            // listBox2
-            // 
-            this.listBox2.FormattingEnabled = true;
-            this.listBox2.Location = new System.Drawing.Point(278, 43);
-            this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(244, 589);
-            this.listBox2.TabIndex = 1;
-            // 
-            // diabetesMetrics
-            // 
-            this.diabetesMetrics.FormattingEnabled = true;
-            this.diabetesMetrics.Location = new System.Drawing.Point(6, 43);
-            this.diabetesMetrics.Name = "diabetesMetrics";
-            this.diabetesMetrics.Size = new System.Drawing.Size(242, 576);
-            this.diabetesMetrics.TabIndex = 0;
-            // 
-            // depressionTab
-            // 
-            this.depressionTab.Location = new System.Drawing.Point(4, 22);
-            this.depressionTab.Name = "depressionTab";
-            this.depressionTab.Padding = new System.Windows.Forms.Padding(3);
-            this.depressionTab.Size = new System.Drawing.Size(528, 634);
-            this.depressionTab.TabIndex = 1;
-            this.depressionTab.Text = "Depression";
-            this.depressionTab.UseVisualStyleBackColor = true;
-            // 
-            // asthmaTab
-            // 
-            this.asthmaTab.Location = new System.Drawing.Point(4, 22);
-            this.asthmaTab.Name = "asthmaTab";
-            this.asthmaTab.Padding = new System.Windows.Forms.Padding(3);
-            this.asthmaTab.Size = new System.Drawing.Size(528, 634);
-            this.asthmaTab.TabIndex = 2;
-            this.asthmaTab.Text = "Asthma";
-            this.asthmaTab.UseVisualStyleBackColor = true;
-            // 
-            // cardiovascularTab
-            // 
-            this.cardiovascularTab.Location = new System.Drawing.Point(4, 22);
-            this.cardiovascularTab.Name = "cardiovascularTab";
-            this.cardiovascularTab.Padding = new System.Windows.Forms.Padding(3);
-            this.cardiovascularTab.Size = new System.Drawing.Size(528, 634);
-            this.cardiovascularTab.TabIndex = 3;
-            this.cardiovascularTab.Text = "Cardiovascular";
-            this.cardiovascularTab.UseVisualStyleBackColor = true;
-            // 
-            // preventiveTab
-            // 
-            this.preventiveTab.Location = new System.Drawing.Point(4, 22);
-            this.preventiveTab.Name = "preventiveTab";
-            this.preventiveTab.Padding = new System.Windows.Forms.Padding(3);
-            this.preventiveTab.Size = new System.Drawing.Size(528, 634);
-            this.preventiveTab.TabIndex = 4;
-            this.preventiveTab.Text = "Preventive";
-            this.preventiveTab.UseVisualStyleBackColor = true;
-            // 
             // loadDashboardDialog
             // 
             this.loadDashboardDialog.FileName = "loadDashboiardDialog";
             // 
-            // diabetesMetricsLabel
+            // updateMetrics
             // 
-            this.diabetesMetricsLabel.AutoSize = true;
-            this.diabetesMetricsLabel.Location = new System.Drawing.Point(7, 24);
-            this.diabetesMetricsLabel.Name = "diabetesMetricsLabel";
-            this.diabetesMetricsLabel.Size = new System.Drawing.Size(86, 13);
-            this.diabetesMetricsLabel.TabIndex = 2;
-            this.diabetesMetricsLabel.Text = "Diabetes Metrics";
+            this.updateMetrics.Location = new System.Drawing.Point(6, 35);
+            this.updateMetrics.Name = "updateMetrics";
+            this.updateMetrics.Size = new System.Drawing.Size(75, 23);
+            this.updateMetrics.TabIndex = 2;
+            this.updateMetrics.Text = "Update";
+            this.updateMetrics.UseVisualStyleBackColor = true;
+            this.updateMetrics.Click += new System.EventHandler(this.updateMetrics_Click);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.updateMetrics);
+            this.groupBox1.Location = new System.Drawing.Point(7, 19);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(145, 64);
+            this.groupBox1.TabIndex = 3;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Update Excel 2003 to 2007";
+            this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.updateDashboardsButton);
+            this.groupBox2.Location = new System.Drawing.Point(7, 112);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(145, 64);
+            this.groupBox2.TabIndex = 4;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Update Provider Dashboards";
             // 
             // ProviderDashboards
             // 
@@ -422,10 +342,8 @@
             this.providersBox.PerformLayout();
             this.DataLocationBox.ResumeLayout(false);
             this.DataLocationBox.PerformLayout();
-            this.metricsTab.ResumeLayout(false);
-            this.Diabetes.ResumeLayout(false);
-            this.diabetesTab.ResumeLayout(false);
-            this.diabetesTab.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -457,16 +375,9 @@
         private System.Windows.Forms.ListBox ADList;
         private System.Windows.Forms.Label metricsProviders;
         private System.Windows.Forms.Label ProvidersAD;
-        private System.Windows.Forms.TabPage metricsTab;
-        private System.Windows.Forms.TabControl Diabetes;
-        private System.Windows.Forms.TabPage diabetesTab;
-        private System.Windows.Forms.TabPage depressionTab;
-        private System.Windows.Forms.TabPage asthmaTab;
-        private System.Windows.Forms.TabPage cardiovascularTab;
-        private System.Windows.Forms.TabPage preventiveTab;
-        private System.Windows.Forms.ListBox listBox2;
-        private System.Windows.Forms.ListBox diabetesMetrics;
-        private System.Windows.Forms.Label diabetesMetricsLabel;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button updateMetrics;
+        private System.Windows.Forms.GroupBox groupBox2;
     }
 }
 

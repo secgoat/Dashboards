@@ -72,7 +72,7 @@
     <Compile Include="metrics\PreventiveMetric.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UpdateDashboards.cs" />
+    <None Include="UpdateDashboards.cs.OLD" />
     <Compile Include="UpdateMetricsToXLSX.cs" />
     <Compile Include="XMLSettings.cs" />
     <EmbeddedResource Include="Form1.resx">

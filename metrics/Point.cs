@@ -18,7 +18,6 @@ namespace ProviderDashboards.metrics
         {
             this.X = x;
             this.Y = y;
-
         }
     }
 }
