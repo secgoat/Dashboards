@@ -74,13 +74,13 @@ namespace ProviderDashboards
             {
                 _dashboard = new XLWorkbook(dashboardFile);
 
-                for (int i = 0; i < metrics_files.Length; i++)
+               /* for (int i = 0; i < metrics_files.Length; i++)
                 {
                     _metrics = new XLWorkbook(metrics_files[i]);
                     //this is where we read all the data into some sort of array
                     MetricsToDictArray(_metrics);
-                    _metrics.Dispose();
-                }
+                    _metrics.Dispose(); 
+                } */
                 ExcelScanInternal(_dashboard);
                 //MetricsToDashboard();
                 _dashboard.Save();
@@ -92,71 +92,7 @@ namespace ProviderDashboards
             }
         }
 
-        private void MetricsToDashboard(Dictionary<String, IXLRangeRow> providerRows, IXLWorksheet sheet)
-        {
-            /* open the dsahboard here and create a dicitoary for each metric, where key = provider name and value =
-             * row number of new row for provider. this will be the X value for the calculatiosn to add data to the sheets
-             */
-
-            XLWorkbook preventiveFile;
-            List<XLWorkbook> PreventiveFiles = new List<XLWorkbook>();
-            int[] preventivFileLocations = new int[] { 0, 3, 3, 15, 16, 17, 18 };//use 3 twice so we can get the 2 metrics from BMI file
-            //this allows the loop in the preventive metrics object to iterate over file 3 2 times with different results
-
-            foreach (int fileNum in preventivFileLocations)
-            {
-                preventiveFile = new XLWorkbook(metrics_files[fileNum]);
-                PreventiveFiles.Add(preventiveFile);
-            }
-            // the following removed for brevity
-            //bring it back after i get the data for 1 provider ot work correctly
-            /*PreventiveMetric preventive = new PreventiveMetric(providers[1], PreventiveFiles);
-            List<object> metrics = preventive.Metrics;
-            var row = providerRows.ElementAt(1).Value;
-            for (int x = 1; x < preventive.Metrics.Count; x++)
-            {
-                var cell = row.Cell(x);
-                //cell.Style.NumberFormat.NumberFormatId = 0;
-                cell.SetValue(preventive.Metrics.ElementAt(x));
-            } */
-            for(int i = 0; i < providers.Count; i++)
-            {
-                String fileName = metrics_files[3].ToString();
-                PreventiveMetric preventive = new PreventiveMetric(providers[i], PreventiveFiles);
-                List<object> metrics = preventive.Metrics;
-                var row = providerRows.ElementAt(i).Value;
-                for (int x = 1; x < metrics.Count; x++)
-                {
-                    var cell = row.Cell(x);
-                    if (x == 1) { cell.Style.NumberFormat.NumberFormatId = 17; }//mmm-yy
-                    else { cell.Style.NumberFormat.NumberFormatId = 10; }//0.00%
-                    //cell.Style.NumberFormat.Format = "@";
-                    cell.Style.Font.SetBold(false);
-                    cell.SetValue(preventive.Metrics.ElementAt(x));
-                } 
-            }
-       
-            /* this was for asthma having some issues with the asthma one pulling data other than null from worksheets
-            List<object[,]> asthmaMetrics = new List<object[,]>() { metricsList[1], metricsList[2] };
-            
-            XLWorkbook asthmaReport = new XLWorkbook(metrics_files[1]);
-            foreach (string provider in providers)
-            {
-                AsthmaMetric asthma = new AsthmaMetric(provider, asthmaReport);
-                foreach (var pair in providerRows)
-                {
-                    if (pair.Key.Contains(provider))
-                    {
-                        var row = pair.Value;
-                        for (int i = 1; i < asthma.Metrics.Count; i++)
-                        {
-                            var cell = row.Cell(i);
-                            cell.SetValue(asthma.Metrics.ElementAt(i) );
-                        }
-                    }
-                }
-            }*/
-        }
+    
 
         private void MetricsToDictArray(XLWorkbook metricsFile)
         {
@@ -292,5 +228,77 @@ namespace ProviderDashboards
                 }
             }
         }
+
+        private void MetricsToDashboard(Dictionary<String, IXLRangeRow> providerRows, IXLWorksheet sheet)
+        {
+            /* Preventive Files set up
+             * 
+             */
+            XLWorkbook preventiveFile;
+            List<XLWorkbook> PreventiveFiles = new List<XLWorkbook>();
+            int[] preventivFileLocations = new int[] { 3, 3, 16, 15, 17, 18, 0 };//use 3 twice so we can get the 2 metrics from BMI file
+            //this allows the loop in the preventive metrics object to iterate over file 3 2 times with different results
+
+            foreach (int fileNum in preventivFileLocations)
+            {
+                preventiveFile = new XLWorkbook(metrics_files[fileNum]);
+                string name = preventiveFile.Properties.Title;
+                PreventiveFiles.Add(preventiveFile);
+            }
+            
+            for (int i = 0; i < providers.Count; i++)
+            {
+                String fileName = metrics_files[3].ToString();
+                PreventiveMetric preventive = new PreventiveMetric(providers[i], PreventiveFiles);
+                List<object> metrics = preventive.Metrics;
+                var row = providerRows.ElementAt(i).Value; // this is why Phil and sarah are getting skipped, put their metrics in clair and linda stephens instead. need to match names  instea dof wokrign by number
+                for (int x = 1; x <= metrics.Count; x++)
+                {
+                    var cell = row.Cell(x);
+                    if (x == 1) { cell.Style.NumberFormat.NumberFormatId = 17; }//mmm-yy
+                    else { cell.Style.NumberFormat.NumberFormatId = 10; }//0.00%
+                    //cell.Style.NumberFormat.Format = "@";
+                    cell.Style.Font.SetBold(false);
+                    cell.SetValue(preventive.Metrics.ElementAt(x - 1));
+                }
+            }
+
+            /* this was for asthma having some issues with the asthma one pulling data other than null from worksheets
+            List<object[,]> asthmaMetrics = new List<object[,]>() { metricsList[1], metricsList[2] };
+            
+            XLWorkbook asthmaReport = new XLWorkbook(metrics_files[1]);
+            foreach (string provider in providers)
+            {
+                AsthmaMetric asthma = new AsthmaMetric(provider, asthmaReport);
+                foreach (var pair in providerRows)
+                {
+                    if (pair.Key.Contains(provider))
+                    {
+                        var row = pair.Value;
+                        for (int i = 1; i < asthma.Metrics.Count; i++)
+                        {
+                            var cell = row.Cell(i);
+                            cell.SetValue(asthma.Metrics.ElementAt(i) );
+                        }
+                    }
+                }
+            }*/
+        }
+
+        private void DiabetesToDashboard()
+        { }
+
+        private void DepressionToDashboard()
+        { }
+
+        private void CardiovascularToDashboard()
+        { }
+
+        private void AsthmaToDashboard()
+        { }
+
+        private void PreventiveToDashboard()
+        { }
+
     }
 }

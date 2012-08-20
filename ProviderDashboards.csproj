@@ -68,6 +68,9 @@
     </Compile>
     <Compile Include="LoadandMatchMetricsNames.cs" />
     <Compile Include="metrics\AsthmaMetric.cs" />
+    <Compile Include="metrics\CardiovascularMetric.cs" />
+    <Compile Include="metrics\DepressionMetric.cs" />
+    <Compile Include="metrics\DiabetesMetric.cs" />
     <Compile Include="metrics\Point.cs" />
     <Compile Include="metrics\PreventiveMetric.cs" />
     <Compile Include="Program.cs" />

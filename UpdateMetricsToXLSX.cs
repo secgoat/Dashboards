@@ -30,7 +30,7 @@ namespace ProviderDashboards
                 wb.SaveAs(Filename: file + "x", FileFormat: Microsoft.Office.Interop.Excel.XlFileFormat.xlOpenXMLWorkbook);
                 wb.Close();
                 app.Quit();
-                path += name;
+                path += name;//add the file name to the backup path so the move can be completed
                 File.Move(file, path);
             }
 

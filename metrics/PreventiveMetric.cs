@@ -14,8 +14,6 @@ namespace ProviderDashboards.metrics
         List<object> metrics = new List<object>(); // this is the actuall contnets of the metrics locations
         List<String> metricNames = new List<String>();
         String provider;
-        Dictionary<Point, String> dashboardMetrics = new Dictionary<Point, String>();
-        List<object[,]> metricsArrays;
 
         public List<object> Metrics { get { return metrics; } set{ return;  } }
 
@@ -25,6 +23,9 @@ namespace ProviderDashboards.metrics
             this.workbooks = workbooks;
             setmetricNames();
             findProvderName();
+            //use this so date is only inserted once, couldnt get it right in the find provider loops
+            System.DateTime now = DateTime.Today;
+            metrics.Insert(0, now);
         }
 
         /// <summary>
@@ -34,28 +35,29 @@ namespace ProviderDashboards.metrics
         private void setmetricNames()
         {
             /* the array of files goes like this:
-             * 0: Advanced Directives
+             * 
+             * 0: CHD BMI
              * 1: CHD BMI
-             * 2: CHD BMI
+               2: Cervical Cancer
              * 3: Breast Cancer
-             * 4: Cervical Cancer
-             * 5: Colon Cancer
-             * 6: pneumococcal
+             * 4: Colon Cancer
+             * 5: pneumococcal
+               6: Advanced Directives
              */
-            metricNames.Add("Total # of patients with an Advance Directive on File: "); //percent (x+3) ADVANCED DIRECTIVES 
+
 
             metricNames.Add("Total # of eligible patients with a documented BMI percentile >= 85 within the past year: ");//percent (y+14) BMI
             metricNames.Add("Total # of  of patients with a BMI percentile >= 85 who received 5-2-1-0 counseling: ");//percent (x+14) BMI
+           
+            metricNames.Add("Percent: "); //precent (x+1) CERVICAL       
             
             metricNames.Add("Total # of eligible patients with a mammogram done in the past 2 years: ");//percent (x+12) BREAST
-           
-            metricNames.Add("Percent: "); //precent (x+1) CERVICAL
             
             metricNames.Add("Percent: "); //percent (x+1) COLON
             
             metricNames.Add("# of patients 65+ years of age who received pneumococcal immunization within their lifetime:");//percent(x+14) PNEUMOCOCOAL
-            
-            
+
+            metricNames.Add("Total # of patients with an Advance Directive on File: "); //percent (x+3) ADVANCED DIRECTIVES 
         }
 
         private void findProvderName()
@@ -77,14 +79,14 @@ namespace ProviderDashboards.metrics
                         {
                             providerLocation = new Point(1, cellRow);
                             setMetricDataLocations(providerLocation, fileNumber);
-                            continue;
+                            break;
                         }
                     }
 
                 }
+               
             }
-            System.DateTime now = DateTime.Today;
-            metrics.Insert(0, now);
+            
             //metrics.Insert(0, now.Month +"-" + now.Year);
            
         }
@@ -101,7 +103,7 @@ namespace ProviderDashboards.metrics
             {
                 case 0:
                     metricName = metricNames[0];
-                    xOffset = 3;
+                    xOffset = 14;
                     break;
                 case 1:
                     metricName = metricNames[1];
@@ -109,7 +111,7 @@ namespace ProviderDashboards.metrics
                     break;
                 case 2:
                     metricName = metricNames[2];
-                    xOffset = 14;
+                    xOffset = 1;
                     break;
                 case 3:
                     metricName = metricNames[3];
@@ -121,11 +123,11 @@ namespace ProviderDashboards.metrics
                     break;
                 case 5:
                     metricName = metricNames[5];
-                    xOffset = 1;
+                    xOffset = 14;
                     break;
                 case 6:
                     metricName = metricNames[6];
-                    xOffset = 14;
+                    xOffset = 3;
                     break;
             }
 
@@ -147,8 +149,8 @@ namespace ProviderDashboards.metrics
                     var firp = curRow.Cell(c).Value;
                     if (firp.ToString() == metricName)
                     {
-                        firp = curRow.Cell(c + xOffset).Value;
-                        double percentValue = (double)firp / 100;
+                       var value = curRow.Cell(c + xOffset).Value;
+                        double percentValue = (double)value / 100;
                         metrics.Add(percentValue);
                         return;
                     }

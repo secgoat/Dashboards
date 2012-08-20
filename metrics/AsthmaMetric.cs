@@ -8,22 +8,24 @@ namespace ProviderDashboards.metrics
 {
     class AsthmaMetric
     {
+        List<XLWorkbook> workbooks;
         XLWorkbook workbook;
         List<Point> metricDataLocations = new List<Point>(); // where is it located in the array
-        List<String> metrics = new List<String>(); // this is the actuall contnets of the metrics locations
+        List<object> metrics = new List<object>(); // this is the actuall contnets of the metrics locations
         List<String> metricNames = new List<String>();
         String provider;
-        Dictionary<Point, String> dashboardMetrics = new Dictionary<Point, String>();
-        List<object[,]> metricsArrays;
 
-        public List<String> Metrics { get { return metrics; } set{ return;  } }
+        public List<object> Metrics { get { return metrics; } set { return; } }
 
-        public AsthmaMetric(String provider, XLWorkbook workbook)
+        public AsthmaMetric(String provider, List<XLWorkbook> workbooks)
         {
             this.provider = provider;
-            this.workbook = workbook;
+            this.workbooks = workbooks;
             setmetricNames();
             findProvderName();
+            //use this so date is only inserted once, couldnt get it right in the find provider loops
+            System.DateTime now = DateTime.Today;
+            metrics.Insert(0, now);
         }
 
         /// <summary>
@@ -34,135 +36,117 @@ namespace ProviderDashboards.metrics
         {
             //x == provider name
             //from Ashtma care management metrics
-            metricNames.Add("Total # of patients with persistent + unclassified asthma diagnosis: "); //lookign for number (x+2)(y+9)
-            metricNames.Add("Total # of patients with a classified asthma diagnosis: ");//looking for percentage (x+3)(y+10)
-            metricNames.Add("Total # of patients with persistent asthma: "); //number (x+2)(Y+6)
-            metricNames.Add("Total # of  patients w/persistent or unclassified asthma with a documented ED visit w/in past year: "); //percent (x+5)(y+18)
-            metricNames.Add("Total # of  patients w/ persistent or unclassified asthma with a documented Asthma Action Plan within the past year: ");//percent(x+6)(y+18)
-            metricNames.Add("Total # of patients w/ persistent or unclassified asthma with an annual Asthma review: ");//percent (x+7)(y+18)
+            metricNames.Add("Total # of patients with persistent + unclassified asthma diagnosis: "); //# X+8
+            metricNames.Add("Total # of patients with a classified asthma diagnosis: ");//% X+10
+            metricNames.Add("Total # of patients with persistent asthma: "); //# X+6
+            metricNames.Add("Total # of  patients w/persistent or unclassified asthma with a documented ED visit w/in past year: "); //% X+18
+            metricNames.Add("Total # of  patients w/ persistent or unclassified asthma with a documented Asthma Action Plan within the past year: ");//% X+18
+            metricNames.Add("Total # of patients w/ persistent or unclassified asthma with an annual Asthma review: ");//% X+18
             //from Leukotrine
-            metricNames.Add("Total # of patients on an inhaled corticosteroid or leukotriene inhibitor: "); //percent (x+2)(y+13)
+            metricNames.Add("Total # of patients on an inhaled corticosteroid or leukotriene inhibitor: "); //% X+3
         }
 
         private void findProvderName()
         {
-            Point providerLocation = new Point(0,0);
-            int fileNumber = 0;
+            Point providerLocation = new Point(0, 0);
+            //int fileNumber = 0;
+            for (int metricNumber = 0; metricNumber < 7; metricNumber++)//total numebr of metrics = 6
+            {
+                if (metricNumber == 6)
+                    workbook = workbooks[1];
+                else
+                    workbook = workbooks[0];
 
-            var sheet = workbook.Worksheet(1);
-            var colRange = sheet.Range("A:A");
-            foreach(var cell in colRange.CellsUsed())
-            {
-                if (cell.Value != null)
+                var sheet = workbook.Worksheet(1);
+                var colRange = sheet.Range("A:A");
+                foreach (var cell in colRange.CellsUsed())
                 {
-                    String value = (String)cell.Value;
-                    int cellRow = cell.Address.RowNumber;
-                    if (value.Contains(provider))
+                    if (cell.Value != null)
                     {
-                        providerLocation = new Point(1, cellRow);
-                        setMetricDataLocations(providerLocation, fileNumber);
-                        fileNumber++;
-                    }
-                }
-            
-            }
-         
-            /*foreach (object[,] metricsFile in metricsArrays) //loop through once for each file
-            {
-                int boundsX = metricsFile.GetUpperBound(0);
-                int boundsY = metricsFile.GetUpperBound(1);
-                //now loop through the arrays
-                for (int y = 0; y <= boundsY; y++)
-                {
-                    for (int x = 0; x <= boundsX; x++)
-                    {
-                        if (metricsFile[x, y] != null)
+                        String value = (String)cell.Value;
+                        int cellRow = cell.Address.RowNumber;
+                        if (value.Contains(provider))
                         {
-                            string name = metricsFile[x, y].ToString();
-                            if (name.Contains(provider))
-                            {
-                                providerLocation = new Point(x, y);
-                                break;
-                            }
+                            setMetricDataLocations(providerLocation, metricNumber);
+                            break;
                         }
                     }
-                } //end array loop
-                setMetricDataLocations(providerLocation, fileNumber);
-                fileNumber++;
-            }*/
-
+                }
+            }
         }
 
-        private void setMetricDataLocations(Point providerLocation, int fileNumber)
+        private void setMetricDataLocations(Point providerLocation, int metricNumber)
         {
 
             var sheet = workbook.Worksheet(1);
-            String contents = "";
-            //just goign to see if i canloop through each damn cell and look at the value
-            int usedRows = sheet.RowsUsed().Count();
+            String metricName = ""; //use this to match the cell from worksheet on which to grab the metrics data
+            int xOffset = 0; //use this to tell the program how many cells on x to move over to find desired data
+            //start the actual retrieval of data here
+            switch (metricNumber)
+            {
+                case 0:
+                    metricName = metricNames[0];
+                    xOffset = 8;
+                    break;
+                case 1:
+                    metricName = metricNames[1];
+                    xOffset = 10;
+                    break;
+                case 2:
+                    metricName = metricNames[2];
+                    xOffset = 6;
+                    break;
+                case 3:
+                    metricName = metricNames[3];
+                    xOffset = 18;
+                    break;
+                case 4:
+                    metricName = metricNames[4];
+                    xOffset = 18;
+                    break;
+                case 5:
+                    metricName = metricNames[5];
+                    xOffset = 18;
+                    break;
+                case 6:
+                    metricName = metricNames[6];
+                    xOffset = 3;
+                    break;
+            }
 
-            var firstRowUsed = sheet.FirstRowUsed();
-            var currentRow = firstRowUsed.RowUsed();
-
-            int lastColumn = sheet.LastColumnUsed().ColumnNumber();
+            var providerRow = sheet.Row(providerLocation.Y); //get the location row of the matched provider name
+            var curRow = providerRow; // use this as an iteratior to step trouhh the rows below provder row
             int lastRow = sheet.LastRowUsed().RowNumber(); //BAM! find the last row used
-
-            var lastCell = currentRow.LastCellUsed(); //last cell gets set to nnull sometimes?
-
-            object[,] sheetValue = new object[lastRow, lastColumn];
+            var lastCell = curRow.LastCellUsed(); //last cell gets set to nnull sometimes?
 
             while (lastCell == null)
             {
-                currentRow = currentRow.RowBelow();
-                lastCell = currentRow.LastCellUsed();
+                curRow = curRow.RowBelow();
+                lastCell = curRow.LastCellUsed();
             }
-            for (int i = 0; i < usedRows; i++)
+            for (int r = curRow.RowNumber(); r < lastRow; r++)
             {
-                lastCell = currentRow.LastCellUsed();
-                if (lastCell != null)
+                lastCell = curRow.LastCellUsed();
+                for (int c = 1; c < lastCell.Address.ColumnNumber; c++)//this does too many, maybe just search for the next 10 rows?
                 {
-                    for (int j = 1; j <= lastCell.Address.ColumnNumber - 1; j++)
+                    var firp = curRow.Cell(c).Value;
+                    if (firp.ToString() == metricName)
                     {
-                        //String contents = currentRow.Cell(j).GetString();
-                        var firp = currentRow.Cell(j).Value;
-                        sheetValue[i, j - 1] = firp;
-                        //data.Add(contents);
+                        var value = curRow.Cell(c + xOffset).Value;
+                        if (metricNumber == 0 || metricNumber == 2)
+                        {
+                            metrics.Add(value); //just need a straight number
+                        }
+                        else //need a p[ercent
+                        {
+                            double percentValue = (double)value / 100;
+                            metrics.Add(percentValue);
+                        }
+                        return;
                     }
                 }
-                currentRow = currentRow.RowBelow();
-            }
-
-            
-            if (fileNumber == 0) //from asthma care management
-            {
-                
-                metrics.Add(sheet.Cell(providerLocation.X + 16, providerLocation.Y + 2).ToString());
-                contents = sheet.Cell(providerLocation.X + 16, providerLocation.Y + 2).Value.ToString();
-
-                metrics.Add(sheet.Cell(providerLocation.X + 18, providerLocation.Y + 3).Value.ToString());
-                contents = sheet.Cell(providerLocation.X + 18, providerLocation.Y + 3).ToString();
-
-                metrics.Add(sheet.Cell(providerLocation.X + 6, providerLocation.Y + 2).Value.ToString());
-                contents = sheet.Cell(providerLocation.X + 6, providerLocation.Y + 2).ToString();
-
-                metrics.Add(sheet.Cell(providerLocation.X + 18, providerLocation.Y + 5).Value.ToString());
-                contents = sheet.Cell(providerLocation.X + 18, providerLocation.Y + 5).ToString();
-
-                metrics.Add(sheet.Cell(providerLocation.X + 18, providerLocation.Y + 6).Value.ToString());
-                contents = sheet.Cell(providerLocation.X + 18, providerLocation.Y + 6).ToString();
-
-                metrics.Add(sheet.Cell(providerLocation.X + 18, providerLocation.Y + 7).Value.ToString());
-                contents = sheet.Cell(providerLocation.X + 18, providerLocation.Y + 7).ToString();
-            }
-
-            else //from lleukotrine
-            {
-                metrics.Add(sheet.Cell(providerLocation.X + 13, providerLocation.Y + 3).Value.ToString());
-                contents = sheet.Cell(providerLocation.X + 13, providerLocation.Y + 3).Value.ToString();
+                curRow = curRow.RowBelow();
             }
         }
-
-       
-
     }
 }

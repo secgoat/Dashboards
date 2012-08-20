@@ -2,7 +2,7 @@
 <Settings>
   <DataLocations>
     <MetricsFolder>C:\Users\jtilson\Desktop\Metrics</MetricsFolder>
-    <DashboardFile>C:\Users\jtilson\Desktop\Metrics\Dashboard\Provider Dashboards.xls</DashboardFile>
+    <DashboardFile>C:\Users\jtilson\Desktop\Metrics\Dashboard\Provider Dashboards.xlsx</DashboardFile>
   </DataLocations>
   <Providers>
     <Name>Loren Solnit, MD</Name>
