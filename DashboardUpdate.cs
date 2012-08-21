@@ -14,18 +14,11 @@ namespace ProviderDashboards
     class DashboardUpdate
     {
         XLWorkbook _dashboard;
-        XLWorkbook _metrics;
         IXLWorksheet _worksheet;
         IXLRange _worksheet_range;
 
         private string[] metrics_files;
-        //use these to store the data from all the sheets
-       
-        List<object[,]> metricsList = new List<object[,]>(); //kepp track of all metrics data
-        Dictionary<String, List<int>> dashboardRowLocations = new Dictionary<string, List<int>>();  //string = metrics name list = row numbers of new rows, should be bale to match them off based on provider list
-        
         private List<String> providers;
-        
         
         /// <summary>
         /// Constructor
@@ -37,9 +30,11 @@ namespace ProviderDashboards
             stripnames();
 
         }
+
         private void stripnames()
         {
-            ///<summary> use this to cut down the credentials form the provider names and just use first name
+            ///<summary> 
+            /// use this to cut down the credentials form the provider names and just use first name
             /// this allows for  us to see if a cell contains that providers names so we can extrapolate the needed data from
             /// there
             /// </summary>
@@ -53,16 +48,11 @@ namespace ProviderDashboards
             providers.Insert(0, "Agency"); //add the Agency to identify the agency metrics locations
         }
 
-        /// <summary>
-        /// open the excel files and parse them into arrays and lists for easier 
-        /// data manipulation
-        /// </summary>
-        /// <param name="dashboardFile"></param>
-        /// <param name="metricsFolder"></param>
         public void _openExcel(String dashboardFile, String metricsFolder)
         {
             //grab all the files in the metrics folder
             metrics_files = Directory.GetFiles(metricsFolder);
+            
             if (File.Exists("Copy.xlsx"))
             {
                 File.Delete("Copy.xlsx");
@@ -74,15 +64,14 @@ namespace ProviderDashboards
             {
                 _dashboard = new XLWorkbook(dashboardFile);
 
-               /* for (int i = 0; i < metrics_files.Length; i++)
-                {
-                    _metrics = new XLWorkbook(metrics_files[i]);
-                    //this is where we read all the data into some sort of array
-                    MetricsToDictArray(_metrics);
-                    _metrics.Dispose(); 
-                } */
-                ExcelScanInternal(_dashboard);
-                //MetricsToDashboard();
+                //iterate thorugh all the dashboard sheets, prep them for new daata by adding new rows, then  extrract data from
+                //metrics reports and insert into those sheets
+                int numSheets = _dashboard.Worksheets.Count;
+                for (int sheetNum = 1; sheetNum < numSheets + 1; sheetNum++)
+                    {
+                        var sheet = _dashboard.Worksheet(sheetNum);
+                        prepDashboardSheets(sheet);
+                     }
                 _dashboard.Save();
                 
             }
@@ -92,87 +81,17 @@ namespace ProviderDashboards
             }
         }
 
-    
-
-        private void MetricsToDictArray(XLWorkbook metricsFile)
-        {
-            
-            var sheet = metricsFile.Worksheet(1);
-           
-            int usedRows = sheet.RowsUsed().Count();
-
-            List<String> data = new List<string>();
-
-            var firstRowUsed = sheet.FirstRowUsed();
-            var currentRow = firstRowUsed.RowUsed();
-            string name = _metrics.Properties.Title;
-
-            int lastColumn = sheet.LastColumnUsed().ColumnNumber();
-            int lastRow = sheet.LastRowUsed().RowNumber(); //BAM! find the last row used
-           
-            var lastCell = currentRow.LastCellUsed(); //last cell gets set to nnull sometimes?
-
-            object[,] sheetValue = new object[lastRow, lastColumn];
-            
-            while(lastCell == null)
-            {
-                currentRow = currentRow.RowBelow();
-                lastCell = currentRow.LastCellUsed();
-            }
-            for (int i = 0; i < usedRows; i++)
-            {
-                lastCell = currentRow.LastCellUsed();
-                if (lastCell != null)
-                {
-                    for (int j = 1; j <= lastCell.Address.ColumnNumber - 1; j++)
-                    {
-                        //String contents = currentRow.Cell(j).GetString();
-                        var firp = currentRow.Cell(j).Value;
-                        sheetValue[i, j - 1] = firp;
-                        //data.Add(contents);
-                    }
-                }
-                currentRow = currentRow.RowBelow();
-            }
-
-            metricsList.Add(sheetValue);
-
-        }
-
-        private void ExcelScanInternal(XLWorkbook workBookIn)
-        {
-            int numSheets = workBookIn.Worksheets.Count;
-
-            //
-            // Iterate through the sheets. They are indexed starting at 1.
-            //
-            //for (int sheetNum = 1; sheetNum < numSheets + 1; sheetNum++)
-            //{
-            //    var sheet = workBookIn.Worksheet(sheetNum);
-            //    prepDashboardSheets(sheet);
-           // }
-            var sheet = workBookIn.Worksheet(5); //preventive
-            prepDashboardSheets(sheet);
-
-
-        }
-
         private void prepDashboardSheets(IXLWorksheet sheet)
         {
-            //testing for now, try to scan for length of excel file (x =1, y= ?) 
-            //if 2 blank cells in a row then last filled cell is end of report and only have to 
-            //loop through that many cells to make sure I have inserted data for all providers.
+            /*.
+             * can use htis for both types of sheets. 
+             *  Regular: List.Count -1 (end of list: should be Month) List.Count -2 (last value: Should be provider name) 
+             *  Diabetes: List.Count -1 (end of list: Month) List.Count -3 (blank space between provider name an dmonth on this one)
+             */
+
             _worksheet = sheet;
-            List<int> newRowList = new List<int>(); //use this to keep track of rows that need a new row so
-            Dictionary<String, int> providerRowList = new Dictionary<String, int>();// use this to keep track of where each provisders new row is so we can insert metrics data into it
-
-            //we can add new rows after checkign each row and thus not ad 285 new rows.
-
-            String lastValue = ""; //use this to keep track of the last string that way on Agancy Metrics we can just delete the current row
-
-            Dictionary<String, IXLRangeRow> providerRows = new Dictionary<String, IXLRangeRow>();
             //use this one to keep track of provider name and row number. then send it to metrics to dashboard and do accordignly
-
+            Dictionary<String, IXLRangeRow> providerRows = new Dictionary<String, IXLRangeRow>();
 
             if (_worksheet != null)
             {
@@ -189,51 +108,203 @@ namespace ProviderDashboards
                         var row = _worksheet_range.Row(i);
                         var newRow = _worksheet_range.Row(i + 1);
                         string value = row.Cell(1).Value as string;
-                        
+
                         if (value != null)
                         {
-                            //have to do the following because the depression sheet on dashboard does not follow same conventionm as others
-                            if (_worksheet == _dashboard.Worksheet(2) && value.Contains("Agency"))
+                            foreach (string provider in providers)
                             {
-                                newRow = _worksheet_range.Row(i + 2);
-                                newRow.InsertRowsBelow(1);
-                                var blankRow = _worksheet_range.Row(i + 3);
-                                blankRow.Style.NumberFormat.NumberFormatId = 0;
-                                providerRows.Add(value, blankRow);
-                               // i++;
-                                lastValue = value;
-                                continue;
-                            }
-                            //the following should take care of every other sheet for the agency metrics row
-                             if (value == "Month")
-                             {
+                                if (value.Contains(provider))
+                                {
+                                    if (_worksheet == _dashboard.Worksheet(2))//add a new row for the depression sheets
+                                    {
+                                        newRow = _worksheet_range.Row(i + 3);
+                                        newRow.InsertRowsBelow(1);
+                                        var blankRow = _worksheet_range.Row(i + 4);
+                                        blankRow.Style.NumberFormat.NumberFormatId = 0;
+                                        providerRows.Add(value, blankRow);
 
-                                 newRow = _worksheet_range.Row(i + 1);//this gets us int he right area and then insert the row above
-                                 
-                                 newRow.InsertRowsBelow(1); //try to insert rows after we have metrics and tehn insert metrics into cells then insert row
-                                 var blankRow = _worksheet_range.Row(i + 2);
-                                 blankRow.Style.NumberFormat.NumberFormatId = 0;
-                               //  blankRow.Style.Fill.BackgroundColor = XLColor.Blue;
-                                 providerRows.Add(lastValue, blankRow);
-                                 //i++;
-                                 lastValue = value;
-                                 continue;
-                             }
-                            lastValue = value;
+                                    }
+                                    else //add a new row for every other sheet in the dashboard: Asthma, Diabetes, Cardiovascular, Preventive
+                                    {
+                                        newRow = _worksheet_range.Row(i + 2);//this gets us int he right area and then insert the row above
+                                        newRow.InsertRowsBelow(1); //try to insert rows after we have metrics and tehn insert metrics into cells then insert row
+                                        var blankRow = _worksheet_range.Row(i + 3);
+                                        blankRow.Style.NumberFormat.NumberFormatId = 0;
+                                        providerRows.Add(value, blankRow);
+                                    }
+                                    break; //break out of the foreach provider loop, we already found one, we wont find another match, time to go to the next row instead
+                                }
+                            }
                         }
                     }
-                   
                    MetricsToDashboard(providerRows, _worksheet);//figure out what we need to send to this method , worksheet, provider / row dict etc.
-
                 }
             }
         }
 
         private void MetricsToDashboard(Dictionary<String, IXLRangeRow> providerRows, IXLWorksheet sheet)
         {
-            /* Preventive Files set up
-             * 
+            _worksheet = sheet;
+
+            if (_worksheet == _dashboard.Worksheet(1))
+            {
+                DiabetesToDashboard(providerRows);
+            }
+            else if (_worksheet == _dashboard.Worksheet(2))
+            {
+                DepressionToDashboard(providerRows);
+            }
+            else if (_worksheet == _dashboard.Worksheet(3))
+            {
+                AsthmaToDashboard(providerRows);
+            }
+            else if (_worksheet == _dashboard.Worksheet(4))
+            {
+                CardiovascularToDashboard(providerRows);
+            }
+            else if (_worksheet == _dashboard.Worksheet(5))
+            {
+                PreventiveToDashboard(providerRows);
+            }
+        }
+
+        private void DiabetesToDashboard(Dictionary<String, IXLRangeRow> providerRows)
+        {
+            XLWorkbook diabetesFile;
+            List<XLWorkbook> diabetesFiles = new List<XLWorkbook>();
+            int[] diabetesFileLocations = new int[] { 8, 9, 10, 11, 12 };
+
+            foreach (int fileNum in diabetesFileLocations)
+            {
+                diabetesFile = new XLWorkbook(metrics_files[fileNum]);
+                diabetesFiles.Add(diabetesFile);
+            }
+            /* foreach(provider in providers)
+             *  then check to see if providerrows.Keys contains provider
+             *  if true then row = providerRows.Element.Key.Contains(provider)
              */
+            foreach (String provider in providers)
+            {
+                DiabetesMetric diabetes = new DiabetesMetric(provider, diabetesFiles);
+                List<object> metrics = diabetes.Metrics;
+             //TODO: maybe use lambdas to return the appropriate row here?
+        
+                var row = providerRows.Any(p => p.Key.Contains(provider));
+                if (row != null)
+                {
+
+                }
+               
+            }
+            for (int i = 0; i < providers.Count; i++)
+            {
+                DiabetesMetric diabetes = new DiabetesMetric(providers[i], diabetesFiles);
+                List<object> metrics = diabetes.Metrics;
+                //TODO: fix the problem where Phil and Sarah get skipped because we are counting by provider and not matching names
+                //      also fix the diabetes rows, counting by numbe rand need to match names, Loren and Jessica are not on diabetes reports so the nbumber sin the loops below are off.
+                var row = providerRows.ElementAt(i).Value; // this is why Phil and sarah are getting skipped, put their metrics in clair and linda stephens instead. need to match names  instea dof wokrign by number
+                for (int x = 1; x <= metrics.Count; x++)
+                {
+                    var cell = row.Cell(x);
+                    if (x == 1) { cell.Style.NumberFormat.NumberFormatId = 17; }//mmm-yy
+                    else { cell.Style.NumberFormat.NumberFormatId = 10; }//0.00%
+                    //cell.Style.NumberFormat.Format = "@";
+                    cell.Style.Font.SetBold(false);
+                    cell.SetValue(diabetes.Metrics.ElementAt(x - 1));
+                }
+            }
+        }
+
+        private void DepressionToDashboard(Dictionary<String, IXLRangeRow> providerRows)
+        {
+            XLWorkbook depressionFile;
+            List<XLWorkbook> depressionFiles = new List<XLWorkbook>();
+            int[] depressionFileLocations = new int[] { 4, 5, 6, 7 };
+
+            foreach (int fileNum in depressionFileLocations)
+            {
+                depressionFile = new XLWorkbook(metrics_files[fileNum]);
+                depressionFiles.Add(depressionFile);
+            }
+            for (int i = 0; i < providers.Count; i++)
+            {
+                DepressionMetric depression = new DepressionMetric(providers[i], depressionFiles);
+                List<object> metrics = depression.Metrics;
+                //TODO: fix the problem where Phil and Sarah get skipped because we are counting by provider and not matching names
+                var row = providerRows.ElementAt(i).Value; // this is why Phil and sarah are getting skipped, put their metrics in clair and linda stephens instead. need to match names  instea dof wokrign by number
+                for (int x = 1; x <= metrics.Count; x++)
+                {
+                    var cell = row.Cell(x);
+                    if (x == 1) { cell.Style.NumberFormat.NumberFormatId = 17; }//mmm-yy
+                    else { cell.Style.NumberFormat.NumberFormatId = 10; }//0.00%
+                    //cell.Style.NumberFormat.Format = "@";
+                    cell.Style.Font.SetBold(false);
+                    cell.SetValue(depression.Metrics.ElementAt(x - 1));
+                }
+            }
+        }
+
+        private void CardiovascularToDashboard(Dictionary<String, IXLRangeRow> providerRows)
+        {
+            XLWorkbook cardiovascularFile;
+            List<XLWorkbook> cardiovascularFiles = new List<XLWorkbook>();
+            int[] cardiovascularFileLocations = new int[] { 13 };
+
+            foreach (int fileNum in cardiovascularFileLocations)
+            {
+                cardiovascularFile = new XLWorkbook(metrics_files[fileNum]);
+                cardiovascularFiles.Add(cardiovascularFile);
+            }
+            for (int i = 0; i < providers.Count; i++)
+            {
+                CardiovascularMetric cardiovascular = new CardiovascularMetric(providers[i], cardiovascularFiles);
+                List<object> metrics = cardiovascular.Metrics;
+                //TODO: fix the problem where Phil and Sarah get skipped because we are counting by provider and not matching names
+                var row = providerRows.ElementAt(i).Value; // this is why Phil and sarah are getting skipped, put their metrics in clair and linda stephens instead. need to match names  instea dof wokrign by number
+                for (int x = 1; x <= metrics.Count; x++)
+                {
+                    var cell = row.Cell(x);
+                    if (x == 1) { cell.Style.NumberFormat.NumberFormatId = 17; }//mmm-yy
+                    else { cell.Style.NumberFormat.NumberFormatId = 10; }//0.00%
+                    //cell.Style.NumberFormat.Format = "@";
+                    cell.Style.Font.SetBold(false);
+                    cell.SetValue(cardiovascular.Metrics.ElementAt(x - 1));
+                }
+            }
+        }
+
+        private void AsthmaToDashboard(Dictionary<String, IXLRangeRow> providerRows)
+        {
+            XLWorkbook asthmaFile;
+            List<XLWorkbook> AsthmaFiles = new List<XLWorkbook>();
+            int[] asthmaFileLocations = new int[] {1, 2};
+
+            foreach (int fileNum in asthmaFileLocations)
+            {
+                asthmaFile = new XLWorkbook(metrics_files[fileNum]);
+                AsthmaFiles.Add(asthmaFile);
+            }
+            for (int i = 0; i < providers.Count; i++)
+            {
+                AsthmaMetric asthma = new AsthmaMetric(providers[i], AsthmaFiles);
+                List<object> metrics = asthma.Metrics;
+                //TODO: fix the problem where Phil and Sarah get skipped because we are counting by provider and not matching names
+                var row = providerRows.ElementAt(i).Value; // this is why Phil and sarah are getting skipped, put their metrics in clair and linda stephens instead. need to match names  instea dof wokrign by number
+                for (int x = 1; x <= metrics.Count; x++)
+                {
+                    var cell = row.Cell(x);
+                    if (x == 1) { cell.Style.NumberFormat.NumberFormatId = 17; }//mmm-yy
+                    else { cell.Style.NumberFormat.NumberFormatId = 10; }//0.00%
+                    //cell.Style.NumberFormat.Format = "@";
+                    cell.Style.Font.SetBold(false);
+                    cell.SetValue(asthma.Metrics.ElementAt(x - 1));
+                }
+            }
+           
+        }
+
+        private void PreventiveToDashboard(Dictionary<String, IXLRangeRow> providerRows)
+        {
             XLWorkbook preventiveFile;
             List<XLWorkbook> PreventiveFiles = new List<XLWorkbook>();
             int[] preventivFileLocations = new int[] { 3, 3, 16, 15, 17, 18, 0 };//use 3 twice so we can get the 2 metrics from BMI file
@@ -245,12 +316,12 @@ namespace ProviderDashboards
                 string name = preventiveFile.Properties.Title;
                 PreventiveFiles.Add(preventiveFile);
             }
-            
+
             for (int i = 0; i < providers.Count; i++)
             {
-                String fileName = metrics_files[3].ToString();
                 PreventiveMetric preventive = new PreventiveMetric(providers[i], PreventiveFiles);
                 List<object> metrics = preventive.Metrics;
+                //TODO: fix the problem where Phil and Sarah get skipped because we are counting by provider and not matching names
                 var row = providerRows.ElementAt(i).Value; // this is why Phil and sarah are getting skipped, put their metrics in clair and linda stephens instead. need to match names  instea dof wokrign by number
                 for (int x = 1; x <= metrics.Count; x++)
                 {
@@ -262,43 +333,8 @@ namespace ProviderDashboards
                     cell.SetValue(preventive.Metrics.ElementAt(x - 1));
                 }
             }
-
-            /* this was for asthma having some issues with the asthma one pulling data other than null from worksheets
-            List<object[,]> asthmaMetrics = new List<object[,]>() { metricsList[1], metricsList[2] };
-            
-            XLWorkbook asthmaReport = new XLWorkbook(metrics_files[1]);
-            foreach (string provider in providers)
-            {
-                AsthmaMetric asthma = new AsthmaMetric(provider, asthmaReport);
-                foreach (var pair in providerRows)
-                {
-                    if (pair.Key.Contains(provider))
-                    {
-                        var row = pair.Value;
-                        for (int i = 1; i < asthma.Metrics.Count; i++)
-                        {
-                            var cell = row.Cell(i);
-                            cell.SetValue(asthma.Metrics.ElementAt(i) );
-                        }
-                    }
-                }
-            }*/
         }
 
-        private void DiabetesToDashboard()
-        { }
-
-        private void DepressionToDashboard()
-        { }
-
-        private void CardiovascularToDashboard()
-        { }
-
-        private void AsthmaToDashboard()
-        { }
-
-        private void PreventiveToDashboard()
-        { }
 
     }
 }

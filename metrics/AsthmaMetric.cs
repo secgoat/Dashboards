@@ -67,6 +67,7 @@ namespace ProviderDashboards.metrics
                         int cellRow = cell.Address.RowNumber;
                         if (value.Contains(provider))
                         {
+                            providerLocation = new Point(1, cellRow);
                             setMetricDataLocations(providerLocation, metricNumber);
                             break;
                         }
