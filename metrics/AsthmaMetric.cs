@@ -25,7 +25,8 @@ namespace ProviderDashboards.metrics
             findProvderName();
             //use this so date is only inserted once, couldnt get it right in the find provider loops
             System.DateTime now = DateTime.Today;
-            metrics.Insert(0, now);
+            String monthYear = now.ToString("MMM-yy");
+            metrics.Insert(0, monthYear);
         }
 
         /// <summary>
@@ -138,7 +139,7 @@ namespace ProviderDashboards.metrics
                         {
                             metrics.Add(value); //just need a straight number
                         }
-                        else //need a p[ercent
+                        else //need a percent
                         {
                             double percentValue = (double)value / 100;
                             metrics.Add(percentValue);

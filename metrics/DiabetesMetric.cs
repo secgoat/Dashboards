@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using ClosedXML.Excel;
 
+//TODO DIABETES missing values for boxes C G I N O
+//TODO DIabetes current values: A=A, B=B, C=D, E=F, F=H, G=K, H=L, I=M, J=P, K=Q
+
 namespace ProviderDashboards.metrics
 {
     class DiabetesMetric
@@ -25,7 +28,8 @@ namespace ProviderDashboards.metrics
             findProvderName();
             //use this so date is only inserted once, couldnt get it right in the find provider loops
             System.DateTime now = DateTime.Today;
-            metrics.Insert(0, now);
+            String monthYear = now.ToString("MMM-yy");
+            metrics.Insert(0, monthYear);
         }
 
         /// <summary>
@@ -36,33 +40,33 @@ namespace ProviderDashboards.metrics
         {
             //x == provider name
             //Diabetes Care Management_Metrics
-            metricNames.Add("Total # of diabetic patients: "); //# X+4
-            metricNames.Add("HgbA1c x1:");//% X+3
-            metricNames.Add("Average Hgb A1c:"); //# X+4
-            metricNames.Add("HgbA1c < 7:"); //% X+3
-            metricNames.Add("Self Care Plan:");//% X+4
-            metricNames.Add("BP <130/80:");//% X+2
-            metricNames.Add("Eye Exam12 Months:");//% X+3
-            metricNames.Add("Eye Exam18 Months:");//% X+3
-            metricNames.Add("Annual Foot Exam:");//% X+4
-            metricNames.Add("LDL <100:");//% X+ 4
+            metricNames.Add("Total # of diabetic patients: "); //# X+4          (B)
+            metricNames.Add("HgbA1c x1:");//% X+3                               (D)
+            metricNames.Add("Average Hgb A1c:"); //# X+4                        (E)
+            metricNames.Add("HgbA1c < 7:"); //% X+3                             (F)
+            metricNames.Add("Self Care Plan:");//% X+4                          (H)
+            metricNames.Add("BP <130/80:");//% X+2                              (K)
+            metricNames.Add("Eye Exam12 Months:");//% X+3                       (L)
+            metricNames.Add("Eye Exam18 Months:");//% X+3                       (M)
+            metricNames.Add("Annual Foot Exam:");//% X+4                        (P)
+            metricNames.Add("LDL <100:");//% X+ 4                               (Q)
 
             //Diabetes Measure: HgbA1c x2 Non-Compliance_Metrics
             if (provider == "Agency")
                 metricNames.Add("Total # of Patients with two HgbA1c's during the past year and at least 90 days apart:"); //% X+1 = provider X + 13 = agency
             else //every one else
-                metricNames.Add("Percent:");
+                metricNames.Add("Percent:");                          //        (G)
 
             //Diabetes Measure: High Risk DRE Non-Compliance_1 Year_Metrics
-            metricNames.Add("Percent with DRE done within past year:");// % X+5 /X+6
-            metricNames.Add("Percent  with DRE done within past 18 months:");// % X+5 / X+6
-            metricNames.Add("Total # of  High Risk Patients:");//# X+5/X+4
+            metricNames.Add("Percent with DRE done within past year:");//       (N)    % X+5 /X+6
+            metricNames.Add("Percent  with DRE done within past 18 months:");// (O)        % X+5 / X+6
+            metricNames.Add("Total # of  High Risk Patients:");//# X+5/X+4      (C)
 
             //Diabetes Measure: Statin Non-Compliance_Metrics
-            metricNames.Add("Percent:");//%  x+2/X+1
+            metricNames.Add("Percent:");//%  x+2/X+1                            (J)
 
             //Diabetes Measure: ACEI_ARB Non-Compliance_Metrics
-            metricNames.Add("Percent:");//%  X+2/X+1
+            metricNames.Add("Percent:");//%  X+2/X+1                            (I)
         }
 
         private void findProvderName()
@@ -119,7 +123,10 @@ namespace ProviderDashboards.metrics
                     break;
                 case 2:
                     metricName = metricNames[2];
-                    xOffset = 4;
+                    if (agency)
+                        xOffset = 3;
+                    else
+                        xOffset = 4;
                     break;
                 case 3:
                     metricName = metricNames[3];
@@ -212,20 +219,38 @@ namespace ProviderDashboards.metrics
                 lastCell = curRow.LastCellUsed();
                 for (int c = 1; c < lastCell.Address.ColumnNumber; c++)//this does too many, maybe just search for the next 10 rows?
                 {
-                    var firp = curRow.Cell(c).Value;
-                    if (firp.ToString() == metricName)
+                    var firp = curRow.Cell(c).Value.ToString();
+                    if (firp != "")
                     {
-                        var value = curRow.Cell(c + xOffset).Value;
-                        if (metricNumber == 0 || metricNumber == 2 || metricNumber == 13)
+                        if (Strings.Match(metricName, firp))
                         {
-                            metrics.Add(value); //just need a straight number
+                            var value = curRow.Cell(c + xOffset).Value;
+                            if (metricNumber == 0 || metricNumber == 2 || metricNumber == 13)
+                            {
+                                 if (metricNumber == 13)
+                                    metrics.Insert(1, value);
+                                 else
+                                    metrics.Add(value); //just need a straight number
+                            }
+                            else //need a p[ercent
+                            {
+                                double percentValue = (double)value / 100;
+                                if (metricNumber == 10)
+                                    metrics.Insert(4, percentValue);
+                                else if (metricNumber == 11)
+                                    metrics.Insert(10, percentValue);
+                                else if (metricNumber == 12)
+                                    metrics.Insert(11, percentValue);
+                               
+                                else if (metricNumber == 14)
+                                    metrics.Insert(7, percentValue);
+                                else if (metricNumber == 15)
+                                    metrics.Insert(7, percentValue);
+                                else
+                                    metrics.Add(percentValue);
+                            }
+                            return;
                         }
-                        else //need a p[ercent
-                        {
-                            double percentValue = (double)value / 100;
-                            metrics.Add(percentValue);
-                        }
-                        return;
                     }
                 }
                 curRow = curRow.RowBelow();

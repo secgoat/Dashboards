@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using ClosedXML.Excel;
 
+//TODO Agency columns K(7) is pulling a number and not a % fromt he report this may be a change that needs to happen on the report it's self
 namespace ProviderDashboards.metrics
 {
     class DepressionMetric
@@ -25,7 +26,8 @@ namespace ProviderDashboards.metrics
             findProvderName();
             //use this so date is only inserted once, couldnt get it right in the find provider loops
             System.DateTime now = DateTime.Today;
-            metrics.Insert(0, now);
+            String monthYear = now.ToString("MMM-yy");
+            metrics.Insert(0, monthYear);
         }
 
         /// <summary>
@@ -126,7 +128,10 @@ namespace ProviderDashboards.metrics
                     break;
                 case 6:
                     metricName = metricNames[6];
-                    xOffset = 7;
+                    if (provider == "Agency")
+                        xOffset = 6;
+                    else
+                        xOffset = 7;
                     break;
                 case 7:
                     metricName = metricNames[7];
@@ -169,20 +174,30 @@ namespace ProviderDashboards.metrics
                 lastCell = curRow.LastCellUsed();
                 for (int c = 1; c < lastCell.Address.ColumnNumber; c++)//this does too many, maybe just search for the next 10 rows?
                 {
-                    var firp = curRow.Cell(c).Value;
-                    if (firp.ToString() == metricName)
+                    var firp = curRow.Cell(c).Value.ToString();
+                    if (firp != "")
                     {
-                        var value = curRow.Cell(c + xOffset).Value;
-                        if (metricNumber == 0 || metricNumber == 2 || metricNumber == 6)
+                        if (Strings.Match(metricName, firp))
                         {
-                            metrics.Add(value); //just need a straight number
+                            var value = curRow.Cell(c + xOffset).Value;
+                            if (metricNumber == 0 || metricNumber == 1 || metricNumber == 6)
+                            {
+                                metrics.Add(value); //just need a straight number
+                            }
+                            else //need a percent
+                            {
+                                double percentValue = (double)value / 100;
+                                if (metricNumber == 10) // this is from a seperate report, but right now i itewrate thorugh each report and add the values in order base don which report, but on the dashboard they donot match up like that, so i am trying to put them in the correct order so that the populate dashboard call puts them all in right
+                                    metrics.Insert(7, percentValue);
+                                else if (metricNumber == 11)
+                                    metrics.Insert(9, percentValue);
+                                else if (metricNumber == 12)
+                                    metrics.Insert(10, percentValue);
+                                else
+                                    metrics.Add(percentValue);
+                            }
+                            return;
                         }
-                        else //need a percent
-                        {
-                            double percentValue = (double)value / 100;
-                            metrics.Add(percentValue);
-                        }
-                        return;
                     }
                 }
                 curRow = curRow.RowBelow();

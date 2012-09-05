@@ -30,7 +30,10 @@
         {
             this.MainForm = new System.Windows.Forms.TabControl();
             this.MainPage = new System.Windows.Forms.TabPage();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.updateDashboardsButton = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.updateMetrics = new System.Windows.Forms.Button();
             this.createDashboardsButton = new System.Windows.Forms.Button();
             this.SettingsPage = new System.Windows.Forms.TabPage();
             this.saveSettingsButton = new System.Windows.Forms.Button();
@@ -53,16 +56,13 @@
             this.metricsFolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.dashboardFolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.loadDashboardDialog = new System.Windows.Forms.OpenFileDialog();
-            this.updateMetrics = new System.Windows.Forms.Button();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.MainForm.SuspendLayout();
             this.MainPage.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.groupBox1.SuspendLayout();
             this.SettingsPage.SuspendLayout();
             this.providersBox.SuspendLayout();
             this.DataLocationBox.SuspendLayout();
-            this.groupBox1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // MainForm
@@ -88,6 +88,16 @@
             this.MainPage.Text = "Main";
             this.MainPage.UseVisualStyleBackColor = true;
             // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.updateDashboardsButton);
+            this.groupBox2.Location = new System.Drawing.Point(7, 112);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(145, 64);
+            this.groupBox2.TabIndex = 4;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Update Provider Dashboards";
+            // 
             // updateDashboardsButton
             // 
             this.updateDashboardsButton.Location = new System.Drawing.Point(6, 35);
@@ -97,6 +107,27 @@
             this.updateDashboardsButton.Text = "Update Dashboards";
             this.updateDashboardsButton.UseVisualStyleBackColor = true;
             this.updateDashboardsButton.Click += new System.EventHandler(this.updateDashboardsButton_Click);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.updateMetrics);
+            this.groupBox1.Location = new System.Drawing.Point(7, 19);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(145, 64);
+            this.groupBox1.TabIndex = 3;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Update Excel 2003 to 2007";
+            this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
+            // 
+            // updateMetrics
+            // 
+            this.updateMetrics.Location = new System.Drawing.Point(6, 35);
+            this.updateMetrics.Name = "updateMetrics";
+            this.updateMetrics.Size = new System.Drawing.Size(75, 23);
+            this.updateMetrics.TabIndex = 2;
+            this.updateMetrics.Text = "Update";
+            this.updateMetrics.UseVisualStyleBackColor = true;
+            this.updateMetrics.Click += new System.EventHandler(this.updateMetrics_Click);
             // 
             // createDashboardsButton
             // 
@@ -295,37 +326,6 @@
             // 
             this.loadDashboardDialog.FileName = "loadDashboiardDialog";
             // 
-            // updateMetrics
-            // 
-            this.updateMetrics.Location = new System.Drawing.Point(6, 35);
-            this.updateMetrics.Name = "updateMetrics";
-            this.updateMetrics.Size = new System.Drawing.Size(75, 23);
-            this.updateMetrics.TabIndex = 2;
-            this.updateMetrics.Text = "Update";
-            this.updateMetrics.UseVisualStyleBackColor = true;
-            this.updateMetrics.Click += new System.EventHandler(this.updateMetrics_Click);
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.updateMetrics);
-            this.groupBox1.Location = new System.Drawing.Point(7, 19);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(145, 64);
-            this.groupBox1.TabIndex = 3;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Update Excel 2003 to 2007";
-            this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.updateDashboardsButton);
-            this.groupBox2.Location = new System.Drawing.Point(7, 112);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(145, 64);
-            this.groupBox2.TabIndex = 4;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Update Provider Dashboards";
-            // 
             // ProviderDashboards
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -337,13 +337,13 @@
             this.Load += new System.EventHandler(this.Form1_Load);
             this.MainForm.ResumeLayout(false);
             this.MainPage.ResumeLayout(false);
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
             this.SettingsPage.ResumeLayout(false);
             this.providersBox.ResumeLayout(false);
             this.providersBox.PerformLayout();
             this.DataLocationBox.ResumeLayout(false);
             this.DataLocationBox.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }

@@ -73,6 +73,7 @@
     <Compile Include="metrics\DiabetesMetric.cs" />
     <Compile Include="metrics\Point.cs" />
     <Compile Include="metrics\PreventiveMetric.cs" />
+    <Compile Include="metrics\Strings.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="UpdateDashboards.cs.OLD" />

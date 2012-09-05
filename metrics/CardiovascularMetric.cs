@@ -22,10 +22,12 @@ namespace ProviderDashboards.metrics
             this.provider = provider;
             this.workbooks = workbooks;
             setmetricNames();
-            findProvderName();
+             if(provider != "Jessica") //Use this to skip Jessica Thibodeau, she does not do cardiovascular stuff just family planning., but some reason she is showing up on the list with null values
+                findProvderName();
             //use this so date is only inserted once, couldnt get it right in the find provider loops
             System.DateTime now = DateTime.Today;
-            metrics.Insert(0, now);
+            String monthYear = now.ToString("MMM-yy");
+            metrics.Insert(0, monthYear);
         }
 
          private void findProvderName()
@@ -57,13 +59,13 @@ namespace ProviderDashboards.metrics
          private void setmetricNames()
          {
              metricNames.Add("Total # of patients:");//# X+7
-             metricNames.Add("Total # of patients with a documented LDL within the last 12 months:");//# X +14
-             metricNames.Add("Total # of patients with a documented  LDL value < 100 within the last 12 months:");//% X+15
-             metricNames.Add("Total # of patients with last BP < 140/90 within the past year:");//% X+14
-             metricNames.Add("Total # with a documented smoking status within the past year: ");//% X+13
-             metricNames.Add("Total # of smokers: ");//% X+11
-             metricNames.Add("Total # of smokers who were counseled to quit within the past year:");//% X+13
-             metricNames.Add("Total # of patients with a documented self care plan within the past year:");//% X+14
+             metricNames.Add("LDL within the last 12 months:");//% X +14
+             metricNames.Add("LDL value < 100");//% X+15
+             metricNames.Add("BP < 140/90");//% X+14
+             metricNames.Add("documented smoking status");//% X+13
+             metricNames.Add("Total # of smokers:");//% X+11
+             metricNames.Add("counseled to quit");//% X+13
+             metricNames.Add("documented self care plan");//% X+14
          }
 
 
@@ -102,7 +104,10 @@ namespace ProviderDashboards.metrics
                      break;
                  case 6:
                      metricName = metricNames[6];
-                     xOffset = 13;
+                     if (provider == "Agency")
+                         xOffset = 14;
+                     else
+                         xOffset = 13;
                      break;
                  case 7:
                      metricName = metricNames[7];
@@ -125,22 +130,31 @@ namespace ProviderDashboards.metrics
                  lastCell = curRow.LastCellUsed();
                  for (int c = 1; c < lastCell.Address.ColumnNumber; c++)//this does too many, maybe just search for the next 10 rows?
                  {
-                     var firp = curRow.Cell(c).Value;
-                     if (firp.ToString() == metricName)
+                     var firp = curRow.Cell(c).Value.ToString();
+                     if (firp != "")
                      {
-                         var value = curRow.Cell(c + xOffset).Value;
-                         if (metricNumber != 0)
+                         if (Strings.Match(metricName, firp))
                          {
-                             double percentValue = (double)value / 100;
-                             metrics.Add(percentValue);
+                             var value = curRow.Cell(c + xOffset).Value;
+
+                             if (metricNumber == 0)
+                             {
+                                 metrics.Add(value); //just need a straight number
+                             }
+                             else //need a percent
+                             {
+                                 double percentValue = (double)value / 100;
+                                 metrics.Add(percentValue);
+                             }
                              return;
+
                          }
-                         metrics.Add(value); // this should only be metric 0 = the # of patients every othe roen shoudlbe a %   
-                         return;
                      }
                  }
                  curRow = curRow.RowBelow();
              }
+
+
          }
     }
 }

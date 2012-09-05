@@ -172,75 +172,78 @@ namespace ProviderDashboards
         {
             XLWorkbook diabetesFile;
             List<XLWorkbook> diabetesFiles = new List<XLWorkbook>();
-            int[] diabetesFileLocations = new int[] { 8, 9, 10, 11, 12 };
+            int[] diabetesFileLocations = new int[] { 8, 10, 11, 12, 9 }; //order is pretty important here, because of the hardcode int he actual Metricsa Class file and the way it is searchinf for values. Just keep the order on all metrics the same as they are no unless osmehitng chnages like file name or what have you that might mess this order up.
 
             foreach (int fileNum in diabetesFileLocations)
             {
                 diabetesFile = new XLWorkbook(metrics_files[fileNum]);
                 diabetesFiles.Add(diabetesFile);
             }
-            /* foreach(provider in providers)
-             *  then check to see if providerrows.Keys contains provider
-             *  if true then row = providerRows.Element.Key.Contains(provider)
-             */
+           
             foreach (String provider in providers)
             {
                 DiabetesMetric diabetes = new DiabetesMetric(provider, diabetesFiles);
                 List<object> metrics = diabetes.Metrics;
-             //TODO: maybe use lambdas to return the appropriate row here?
-        
-                var row = providerRows.Any(p => p.Key.Contains(provider));
+             
+                var kvp = providerRows.SingleOrDefault(s => s.Key.Contains(provider)); // find matching KVP by using linq
+                var row = kvp.Value; //grap the row out of the value field for the matching KVP entry
                 if (row != null)
                 {
-
+                   
+                    for (int x = 1; x <= metrics.Count; x++)
+                    {
+                        var cell = row.Cell(x);
+                        cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                        if (x == 1) { cell.Style.NumberFormat.NumberFormatId = 17; }//mmm-yy
+                        else if (x == 2 || x == 3 ) { cell.Style.NumberFormat.Format = "@"; }
+                        else if (x == 5) { cell.Style.NumberFormat.Format = "0.0"; }
+                        else { cell.Style.NumberFormat.Format = "0.0%"; }
+                        //cell.Style.NumberFormat.Format = "@";
+                        cell.Style.Font.SetBold(false);
+                        cell.SetValue(metrics.ElementAt(x - 1));
+                    }
                 }
                
             }
-            for (int i = 0; i < providers.Count; i++)
-            {
-                DiabetesMetric diabetes = new DiabetesMetric(providers[i], diabetesFiles);
-                List<object> metrics = diabetes.Metrics;
-                //TODO: fix the problem where Phil and Sarah get skipped because we are counting by provider and not matching names
-                //      also fix the diabetes rows, counting by numbe rand need to match names, Loren and Jessica are not on diabetes reports so the nbumber sin the loops below are off.
-                var row = providerRows.ElementAt(i).Value; // this is why Phil and sarah are getting skipped, put their metrics in clair and linda stephens instead. need to match names  instea dof wokrign by number
-                for (int x = 1; x <= metrics.Count; x++)
-                {
-                    var cell = row.Cell(x);
-                    if (x == 1) { cell.Style.NumberFormat.NumberFormatId = 17; }//mmm-yy
-                    else { cell.Style.NumberFormat.NumberFormatId = 10; }//0.00%
-                    //cell.Style.NumberFormat.Format = "@";
-                    cell.Style.Font.SetBold(false);
-                    cell.SetValue(diabetes.Metrics.ElementAt(x - 1));
-                }
-            }
+            
         }
 
         private void DepressionToDashboard(Dictionary<String, IXLRangeRow> providerRows)
         {
             XLWorkbook depressionFile;
             List<XLWorkbook> depressionFiles = new List<XLWorkbook>();
-            int[] depressionFileLocations = new int[] { 4, 5, 6, 7 };
+            int[] depressionFileLocations = new int[] { 7, 5, 4, 6 };
 
             foreach (int fileNum in depressionFileLocations)
             {
                 depressionFile = new XLWorkbook(metrics_files[fileNum]);
                 depressionFiles.Add(depressionFile);
             }
-            for (int i = 0; i < providers.Count; i++)
+            foreach (String provider in providers)
             {
-                DepressionMetric depression = new DepressionMetric(providers[i], depressionFiles);
+                DepressionMetric depression = new DepressionMetric(provider, depressionFiles);
                 List<object> metrics = depression.Metrics;
-                //TODO: fix the problem where Phil and Sarah get skipped because we are counting by provider and not matching names
-                var row = providerRows.ElementAt(i).Value; // this is why Phil and sarah are getting skipped, put their metrics in clair and linda stephens instead. need to match names  instea dof wokrign by number
-                for (int x = 1; x <= metrics.Count; x++)
+                var kvp = providerRows.SingleOrDefault(s => s.Key.Contains(provider)); // find matching KVP by using linq
+                var row = kvp.Value; //grap the row out of the value field for the matching KVP entry
+                //if Keys do not contain provider name, then row will be null , and no sense in trying to populate!
+                if (row != null)
                 {
-                    var cell = row.Cell(x);
-                    if (x == 1) { cell.Style.NumberFormat.NumberFormatId = 17; }//mmm-yy
-                    else { cell.Style.NumberFormat.NumberFormatId = 10; }//0.00%
-                    //cell.Style.NumberFormat.Format = "@";
-                    cell.Style.Font.SetBold(false);
-                    cell.SetValue(depression.Metrics.ElementAt(x - 1));
+                    for (int x = 1; x <= metrics.Count; x++)
+                    {
+                        var cell = row.Cell(x);
+                        if (x > 7) //do this to up the cell number it x => 7 because in the dashboard cell 7 is a blank line down th middle to seprate the two sides and we want to skip this column
+                            cell = row.Cell(x + 1);
+
+                        cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                        if (x == 1) { cell.Style.NumberFormat.NumberFormatId = 17; }//mmm-yy
+                        else if (x == 2 || x == 3 || x == 8) { cell.Style.NumberFormat.Format = "@";}
+                        else { cell.Style.NumberFormat.Format = "0.0%"; }
+                        //cell.Style.NumberFormat.Format = "@";
+                        cell.Style.Font.SetBold(false);
+                        cell.SetValue(metrics.ElementAt(x - 1));
+                    }
                 }
+
             }
         }
 
@@ -255,50 +258,63 @@ namespace ProviderDashboards
                 cardiovascularFile = new XLWorkbook(metrics_files[fileNum]);
                 cardiovascularFiles.Add(cardiovascularFile);
             }
-            for (int i = 0; i < providers.Count; i++)
+
+            foreach (String provider in providers)
             {
-                CardiovascularMetric cardiovascular = new CardiovascularMetric(providers[i], cardiovascularFiles);
-                List<object> metrics = cardiovascular.Metrics;
-                //TODO: fix the problem where Phil and Sarah get skipped because we are counting by provider and not matching names
-                var row = providerRows.ElementAt(i).Value; // this is why Phil and sarah are getting skipped, put their metrics in clair and linda stephens instead. need to match names  instea dof wokrign by number
-                for (int x = 1; x <= metrics.Count; x++)
+                CardiovascularMetric cardio = new CardiovascularMetric(provider, cardiovascularFiles);
+                List<object> metrics = cardio.Metrics;
+                var kvp = providerRows.SingleOrDefault(s => s.Key.Contains(provider)); // find matching KVP by using linq
+                var row = kvp.Value; //grap the row out of the value field for the matching KVP entry
+                if (row != null)
                 {
-                    var cell = row.Cell(x);
-                    if (x == 1) { cell.Style.NumberFormat.NumberFormatId = 17; }//mmm-yy
-                    else { cell.Style.NumberFormat.NumberFormatId = 10; }//0.00%
-                    //cell.Style.NumberFormat.Format = "@";
-                    cell.Style.Font.SetBold(false);
-                    cell.SetValue(cardiovascular.Metrics.ElementAt(x - 1));
+                    for (int x = 1; x <= metrics.Count; x++)
+                    {
+                        var cell = row.Cell(x);
+                        cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                        if (x == 1) { cell.Style.NumberFormat.NumberFormatId = 17; }//mmm-yy
+                        else if (x == 2) { cell.Style.NumberFormat.Format = "@";  }
+                        else { cell.Style.NumberFormat.Format = "0.0%"; }
+                        //cell.Style.NumberFormat.Format = "@";
+                        cell.Style.Font.SetBold(false);
+                        cell.SetValue(metrics.ElementAt(x - 1));
+                    }
                 }
+
             }
         }
 
         private void AsthmaToDashboard(Dictionary<String, IXLRangeRow> providerRows)
         {
             XLWorkbook asthmaFile;
-            List<XLWorkbook> AsthmaFiles = new List<XLWorkbook>();
+            List<XLWorkbook> asthmaFiles = new List<XLWorkbook>();
             int[] asthmaFileLocations = new int[] {1, 2};
 
             foreach (int fileNum in asthmaFileLocations)
             {
                 asthmaFile = new XLWorkbook(metrics_files[fileNum]);
-                AsthmaFiles.Add(asthmaFile);
+                asthmaFiles.Add(asthmaFile);
             }
-            for (int i = 0; i < providers.Count; i++)
+            foreach (String provider in providers)
             {
-                AsthmaMetric asthma = new AsthmaMetric(providers[i], AsthmaFiles);
+                AsthmaMetric asthma = new AsthmaMetric(provider, asthmaFiles);
                 List<object> metrics = asthma.Metrics;
-                //TODO: fix the problem where Phil and Sarah get skipped because we are counting by provider and not matching names
-                var row = providerRows.ElementAt(i).Value; // this is why Phil and sarah are getting skipped, put their metrics in clair and linda stephens instead. need to match names  instea dof wokrign by number
-                for (int x = 1; x <= metrics.Count; x++)
+                var kvp = providerRows.SingleOrDefault(s => s.Key.Contains(provider)); // find matching KVP by using linq
+                var row = kvp.Value; //grab the row out of the value field for the matching KVP entry. this ensures the providert names are matched and no missing providers get data for some one who does exist
+
+                if (row != null)
                 {
-                    var cell = row.Cell(x);
-                    if (x == 1) { cell.Style.NumberFormat.NumberFormatId = 17; }//mmm-yy
-                    else { cell.Style.NumberFormat.NumberFormatId = 10; }//0.00%
-                    //cell.Style.NumberFormat.Format = "@";
-                    cell.Style.Font.SetBold(false);
-                    cell.SetValue(asthma.Metrics.ElementAt(x - 1));
+                    for (int x = 1; x <= metrics.Count; x++)
+                    {
+                        var cell = row.Cell(x);
+                        cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                        if (x == 1) { cell.Style.NumberFormat.NumberFormatId = 17; }//mmm-yy
+                        if (x == 2 || x == 4) { cell.Style.NumberFormat.Format = "@"; }
+                        else { cell.Style.NumberFormat.Format = "0.0%"; }
+                        cell.Style.Font.SetBold(false);
+                        cell.SetValue(metrics.ElementAt(x - 1));
+                    }
                 }
+
             }
            
         }
@@ -306,7 +322,7 @@ namespace ProviderDashboards
         private void PreventiveToDashboard(Dictionary<String, IXLRangeRow> providerRows)
         {
             XLWorkbook preventiveFile;
-            List<XLWorkbook> PreventiveFiles = new List<XLWorkbook>();
+            List<XLWorkbook> preventiveFiles = new List<XLWorkbook>();
             int[] preventivFileLocations = new int[] { 3, 3, 16, 15, 17, 18, 0 };//use 3 twice so we can get the 2 metrics from BMI file
             //this allows the loop in the preventive metrics object to iterate over file 3 2 times with different results
 
@@ -314,24 +330,29 @@ namespace ProviderDashboards
             {
                 preventiveFile = new XLWorkbook(metrics_files[fileNum]);
                 string name = preventiveFile.Properties.Title;
-                PreventiveFiles.Add(preventiveFile);
+                preventiveFiles.Add(preventiveFile);
             }
 
-            for (int i = 0; i < providers.Count; i++)
+            foreach (String provider in providers)
             {
-                PreventiveMetric preventive = new PreventiveMetric(providers[i], PreventiveFiles);
+                PreventiveMetric preventive = new PreventiveMetric(provider, preventiveFiles);
                 List<object> metrics = preventive.Metrics;
-                //TODO: fix the problem where Phil and Sarah get skipped because we are counting by provider and not matching names
-                var row = providerRows.ElementAt(i).Value; // this is why Phil and sarah are getting skipped, put their metrics in clair and linda stephens instead. need to match names  instea dof wokrign by number
-                for (int x = 1; x <= metrics.Count; x++)
+                var kvp = providerRows.SingleOrDefault(s => s.Key.Contains(provider)); // find matching KVP by using linq
+                var row = kvp.Value; //grap the row out of the value field for the matching KVP entry
+                if (row != null)
                 {
-                    var cell = row.Cell(x);
-                    if (x == 1) { cell.Style.NumberFormat.NumberFormatId = 17; }//mmm-yy
-                    else { cell.Style.NumberFormat.NumberFormatId = 10; }//0.00%
-                    //cell.Style.NumberFormat.Format = "@";
-                    cell.Style.Font.SetBold(false);
-                    cell.SetValue(preventive.Metrics.ElementAt(x - 1));
+                    for (int x = 1; x <= metrics.Count; x++)
+                    {
+                        var cell = row.Cell(x);
+                        cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Right;
+                        if (x == 1) { cell.Style.NumberFormat.NumberFormatId = 17; }//mmm-yy
+                        else { cell.Style.NumberFormat.Format = "0.0%"; }
+                        //cell.Style.NumberFormat.Format = "@";
+                        cell.Style.Font.SetBold(false);
+                        cell.SetValue(metrics.ElementAt(x - 1));
+                    }
                 }
+
             }
         }
 

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ProviderDashboards.metrics
 {
-    class Point
+    public class Point
     {
         /// <summary>
         /// <para>Use this to keep track of X and Y coordinates in a 2d array</para>
