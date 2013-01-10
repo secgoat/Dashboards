@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using ProviderDashboards.metrics;
 
 namespace ProviderDashboards
 {
@@ -196,7 +197,71 @@ namespace ProviderDashboards
 
         }
 
+
+        //the methods to see if the selection in the metrics list box has changed and fire the file open / excel interop to match metric
+        private void preventiveDashMetrics_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //cast the sender back to proper object type
+            ListBox listbox = (ListBox) sender;
+
+            //now grab the metrics name and sotre it;
+            String metricName = (string) preventiveDashMetrics.SelectedItem;
+
+            //try to use the file open dialog to choose a file name. 
+            //store that file name so we can save it into settings.xml for future reference and also to open 
+            //the file with excel.interop
+            if (selectMetricFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                MatchMetricNames matches = new MatchMetricNames(metricName, selectMetricFileDialog.FileName);
+                //preventiveMatchedMetrics.Items.Add(selectMetricFileDialog.FileName);
+                matches.OnDoubleClick += new MatchMetricNames.DoubleClickEvent(this.DoubleClickHandler);
+                
+            }
+                
+            
+
+        }
+
+        private void cardioDashMetrics_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void asthmaDashMetrics_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void depressionDashMetrics_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void diabetesDashMetrics_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+        private void diabetesMatchedMetrics_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
         
+        /* 
+         * OnDoubelClick Delegate handler
+         */
+        public void DoubleClickHandler(object sender)
+        {
+            //I had soem issues with thread safety, this fixed it: http://stackoverflow.com/questions/2255693/cross-thread-operation-not-valid
+            //TODO: figure out which metrics matches is calling this and populate the proper box( asthma, diabetes etc.)
+            var matches = (MatchMetricNames) sender;
+            foreach (string data in matches.Matches)
+            {
+                Invoke(new Action(() => preventiveMatchedMetrics.Items.Add(data)));
+            }
+        }
+
+        
+
 
        
     }

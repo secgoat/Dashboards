@@ -58,33 +58,34 @@
             this.matchMetrics = new System.Windows.Forms.TabPage();
             this.matchMetricsTabs = new System.Windows.Forms.TabControl();
             this.diabetesMetricsMatch = new System.Windows.Forms.TabPage();
+            this.diabetesMatchedMetrics = new System.Windows.Forms.ListBox();
+            this.diabetesDashMetrics = new System.Windows.Forms.ListBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.depressionMetricsMatch = new System.Windows.Forms.TabPage();
-            this.asthmaMetricsMatch = new System.Windows.Forms.TabPage();
-            this.cardiovascularMetricsMatch = new System.Windows.Forms.TabPage();
-            this.preventivemetricsMatch = new System.Windows.Forms.TabPage();
-            this.metricsFolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
-            this.dashboardFolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
-            this.loadDashboardDialog = new System.Windows.Forms.OpenFileDialog();
-            this.diabetesDashMetrics = new System.Windows.Forms.ListBox();
-            this.diabetesMatchedMetrics = new System.Windows.Forms.ListBox();
             this.depressionMatchedMetrics = new System.Windows.Forms.ListBox();
             this.depressionDashMetrics = new System.Windows.Forms.ListBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.asthmaMetricsMatch = new System.Windows.Forms.TabPage();
             this.asthmaMatchedMetrics = new System.Windows.Forms.ListBox();
             this.asthmaDashMetrics = new System.Windows.Forms.ListBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
+            this.cardiovascularMetricsMatch = new System.Windows.Forms.TabPage();
             this.cardioMatchedMetrics = new System.Windows.Forms.ListBox();
             this.cardioDashMetrics = new System.Windows.Forms.ListBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
+            this.preventivemetricsMatch = new System.Windows.Forms.TabPage();
             this.preventiveMatchedMetrics = new System.Windows.Forms.ListBox();
             this.preventiveDashMetrics = new System.Windows.Forms.ListBox();
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
+            this.metricsFolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.dashboardFolderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.loadDashboardDialog = new System.Windows.Forms.OpenFileDialog();
+            this.selectMetricFileDialog = new System.Windows.Forms.OpenFileDialog();
             this.MainForm.SuspendLayout();
             this.MainPage.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -419,6 +420,24 @@
             this.diabetesMetricsMatch.Text = "Diabetes";
             this.diabetesMetricsMatch.UseVisualStyleBackColor = true;
             // 
+            // diabetesMatchedMetrics
+            // 
+            this.diabetesMatchedMetrics.FormattingEnabled = true;
+            this.diabetesMatchedMetrics.Location = new System.Drawing.Point(356, 20);
+            this.diabetesMatchedMetrics.Name = "diabetesMatchedMetrics";
+            this.diabetesMatchedMetrics.Size = new System.Drawing.Size(166, 602);
+            this.diabetesMatchedMetrics.TabIndex = 5;
+            this.diabetesMatchedMetrics.SelectedIndexChanged += new System.EventHandler(this.diabetesMatchedMetrics_SelectedIndexChanged);
+            // 
+            // diabetesDashMetrics
+            // 
+            this.diabetesDashMetrics.FormattingEnabled = true;
+            this.diabetesDashMetrics.Location = new System.Drawing.Point(9, 20);
+            this.diabetesDashMetrics.Name = "diabetesDashMetrics";
+            this.diabetesDashMetrics.Size = new System.Drawing.Size(150, 602);
+            this.diabetesDashMetrics.TabIndex = 4;
+            this.diabetesDashMetrics.SelectedIndexChanged += new System.EventHandler(this.diabetesDashMetrics_SelectedIndexChanged);
+            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -451,68 +470,6 @@
             this.depressionMetricsMatch.Text = "Depression";
             this.depressionMetricsMatch.UseVisualStyleBackColor = true;
             // 
-            // asthmaMetricsMatch
-            // 
-            this.asthmaMetricsMatch.Controls.Add(this.asthmaMatchedMetrics);
-            this.asthmaMetricsMatch.Controls.Add(this.asthmaDashMetrics);
-            this.asthmaMetricsMatch.Controls.Add(this.label5);
-            this.asthmaMetricsMatch.Controls.Add(this.label6);
-            this.asthmaMetricsMatch.Location = new System.Drawing.Point(4, 22);
-            this.asthmaMetricsMatch.Name = "asthmaMetricsMatch";
-            this.asthmaMetricsMatch.Padding = new System.Windows.Forms.Padding(3);
-            this.asthmaMetricsMatch.Size = new System.Drawing.Size(528, 634);
-            this.asthmaMetricsMatch.TabIndex = 2;
-            this.asthmaMetricsMatch.Text = "Asthma";
-            this.asthmaMetricsMatch.UseVisualStyleBackColor = true;
-            // 
-            // cardiovascularMetricsMatch
-            // 
-            this.cardiovascularMetricsMatch.Controls.Add(this.cardioMatchedMetrics);
-            this.cardiovascularMetricsMatch.Controls.Add(this.cardioDashMetrics);
-            this.cardiovascularMetricsMatch.Controls.Add(this.label7);
-            this.cardiovascularMetricsMatch.Controls.Add(this.label8);
-            this.cardiovascularMetricsMatch.Location = new System.Drawing.Point(4, 22);
-            this.cardiovascularMetricsMatch.Name = "cardiovascularMetricsMatch";
-            this.cardiovascularMetricsMatch.Padding = new System.Windows.Forms.Padding(3);
-            this.cardiovascularMetricsMatch.Size = new System.Drawing.Size(528, 634);
-            this.cardiovascularMetricsMatch.TabIndex = 3;
-            this.cardiovascularMetricsMatch.Text = "Cardiovascular";
-            this.cardiovascularMetricsMatch.UseVisualStyleBackColor = true;
-            // 
-            // preventivemetricsMatch
-            // 
-            this.preventivemetricsMatch.Controls.Add(this.preventiveMatchedMetrics);
-            this.preventivemetricsMatch.Controls.Add(this.preventiveDashMetrics);
-            this.preventivemetricsMatch.Controls.Add(this.label9);
-            this.preventivemetricsMatch.Controls.Add(this.label10);
-            this.preventivemetricsMatch.Location = new System.Drawing.Point(4, 22);
-            this.preventivemetricsMatch.Name = "preventivemetricsMatch";
-            this.preventivemetricsMatch.Padding = new System.Windows.Forms.Padding(3);
-            this.preventivemetricsMatch.Size = new System.Drawing.Size(528, 634);
-            this.preventivemetricsMatch.TabIndex = 4;
-            this.preventivemetricsMatch.Text = "Preventive";
-            this.preventivemetricsMatch.UseVisualStyleBackColor = true;
-            // 
-            // loadDashboardDialog
-            // 
-            this.loadDashboardDialog.FileName = "loadDashboiardDialog";
-            // 
-            // diabetesDashMetrics
-            // 
-            this.diabetesDashMetrics.FormattingEnabled = true;
-            this.diabetesDashMetrics.Location = new System.Drawing.Point(9, 20);
-            this.diabetesDashMetrics.Name = "diabetesDashMetrics";
-            this.diabetesDashMetrics.Size = new System.Drawing.Size(150, 602);
-            this.diabetesDashMetrics.TabIndex = 4;
-            // 
-            // diabetesMatchedMetrics
-            // 
-            this.diabetesMatchedMetrics.FormattingEnabled = true;
-            this.diabetesMatchedMetrics.Location = new System.Drawing.Point(356, 20);
-            this.diabetesMatchedMetrics.Name = "diabetesMatchedMetrics";
-            this.diabetesMatchedMetrics.Size = new System.Drawing.Size(166, 602);
-            this.diabetesMatchedMetrics.TabIndex = 5;
-            // 
             // depressionMatchedMetrics
             // 
             this.depressionMatchedMetrics.FormattingEnabled = true;
@@ -528,6 +485,7 @@
             this.depressionDashMetrics.Name = "depressionDashMetrics";
             this.depressionDashMetrics.Size = new System.Drawing.Size(150, 602);
             this.depressionDashMetrics.TabIndex = 8;
+            this.depressionDashMetrics.SelectedIndexChanged += new System.EventHandler(this.depressionDashMetrics_SelectedIndexChanged);
             // 
             // label3
             // 
@@ -547,6 +505,20 @@
             this.label4.TabIndex = 6;
             this.label4.Text = "Metrics From Dashboard";
             // 
+            // asthmaMetricsMatch
+            // 
+            this.asthmaMetricsMatch.Controls.Add(this.asthmaMatchedMetrics);
+            this.asthmaMetricsMatch.Controls.Add(this.asthmaDashMetrics);
+            this.asthmaMetricsMatch.Controls.Add(this.label5);
+            this.asthmaMetricsMatch.Controls.Add(this.label6);
+            this.asthmaMetricsMatch.Location = new System.Drawing.Point(4, 22);
+            this.asthmaMetricsMatch.Name = "asthmaMetricsMatch";
+            this.asthmaMetricsMatch.Padding = new System.Windows.Forms.Padding(3);
+            this.asthmaMetricsMatch.Size = new System.Drawing.Size(528, 634);
+            this.asthmaMetricsMatch.TabIndex = 2;
+            this.asthmaMetricsMatch.Text = "Asthma";
+            this.asthmaMetricsMatch.UseVisualStyleBackColor = true;
+            // 
             // asthmaMatchedMetrics
             // 
             this.asthmaMatchedMetrics.FormattingEnabled = true;
@@ -562,6 +534,7 @@
             this.asthmaDashMetrics.Name = "asthmaDashMetrics";
             this.asthmaDashMetrics.Size = new System.Drawing.Size(150, 602);
             this.asthmaDashMetrics.TabIndex = 8;
+            this.asthmaDashMetrics.SelectedIndexChanged += new System.EventHandler(this.asthmaDashMetrics_SelectedIndexChanged);
             // 
             // label5
             // 
@@ -581,6 +554,20 @@
             this.label6.TabIndex = 6;
             this.label6.Text = "Metrics From Dashboard";
             // 
+            // cardiovascularMetricsMatch
+            // 
+            this.cardiovascularMetricsMatch.Controls.Add(this.cardioMatchedMetrics);
+            this.cardiovascularMetricsMatch.Controls.Add(this.cardioDashMetrics);
+            this.cardiovascularMetricsMatch.Controls.Add(this.label7);
+            this.cardiovascularMetricsMatch.Controls.Add(this.label8);
+            this.cardiovascularMetricsMatch.Location = new System.Drawing.Point(4, 22);
+            this.cardiovascularMetricsMatch.Name = "cardiovascularMetricsMatch";
+            this.cardiovascularMetricsMatch.Padding = new System.Windows.Forms.Padding(3);
+            this.cardiovascularMetricsMatch.Size = new System.Drawing.Size(528, 634);
+            this.cardiovascularMetricsMatch.TabIndex = 3;
+            this.cardiovascularMetricsMatch.Text = "Cardiovascular";
+            this.cardiovascularMetricsMatch.UseVisualStyleBackColor = true;
+            // 
             // cardioMatchedMetrics
             // 
             this.cardioMatchedMetrics.FormattingEnabled = true;
@@ -596,6 +583,7 @@
             this.cardioDashMetrics.Name = "cardioDashMetrics";
             this.cardioDashMetrics.Size = new System.Drawing.Size(150, 602);
             this.cardioDashMetrics.TabIndex = 8;
+            this.cardioDashMetrics.SelectedIndexChanged += new System.EventHandler(this.cardioDashMetrics_SelectedIndexChanged);
             // 
             // label7
             // 
@@ -615,6 +603,20 @@
             this.label8.TabIndex = 6;
             this.label8.Text = "Metrics From Dashboard";
             // 
+            // preventivemetricsMatch
+            // 
+            this.preventivemetricsMatch.Controls.Add(this.preventiveMatchedMetrics);
+            this.preventivemetricsMatch.Controls.Add(this.preventiveDashMetrics);
+            this.preventivemetricsMatch.Controls.Add(this.label9);
+            this.preventivemetricsMatch.Controls.Add(this.label10);
+            this.preventivemetricsMatch.Location = new System.Drawing.Point(4, 22);
+            this.preventivemetricsMatch.Name = "preventivemetricsMatch";
+            this.preventivemetricsMatch.Padding = new System.Windows.Forms.Padding(3);
+            this.preventivemetricsMatch.Size = new System.Drawing.Size(528, 634);
+            this.preventivemetricsMatch.TabIndex = 4;
+            this.preventivemetricsMatch.Text = "Preventive";
+            this.preventivemetricsMatch.UseVisualStyleBackColor = true;
+            // 
             // preventiveMatchedMetrics
             // 
             this.preventiveMatchedMetrics.FormattingEnabled = true;
@@ -630,6 +632,7 @@
             this.preventiveDashMetrics.Name = "preventiveDashMetrics";
             this.preventiveDashMetrics.Size = new System.Drawing.Size(150, 602);
             this.preventiveDashMetrics.TabIndex = 8;
+            this.preventiveDashMetrics.SelectedIndexChanged += new System.EventHandler(this.preventiveDashMetrics_SelectedIndexChanged);
             // 
             // label9
             // 
@@ -648,6 +651,14 @@
             this.label10.Size = new System.Drawing.Size(122, 13);
             this.label10.TabIndex = 6;
             this.label10.Text = "Metrics From Dashboard";
+            // 
+            // loadDashboardDialog
+            // 
+            this.loadDashboardDialog.FileName = "loadDashboiardDialog";
+            // 
+            // selectMetricFileDialog
+            // 
+            this.selectMetricFileDialog.FileName = "selectMetricFileDialog";
             // 
             // ProviderDashboards
             // 
@@ -743,6 +754,7 @@
         private System.Windows.Forms.ListBox preventiveDashMetrics;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.OpenFileDialog selectMetricFileDialog;
     }
 }
 
