@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="CreateExcelDoc.cs" />
     <Compile Include="DashboardUpdate.cs" />
+    <Compile Include="EmailMetrics.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

@@ -5,19 +5,21 @@
     <DashboardFile>C:\Users\jtilson\Desktop\Metrics\Dashboard\Provider Dashboards.xlsx</DashboardFile>
   </DataLocations>
   <Providers>
-    <Name>Loren Solnit, MD</Name>
+    <Name>Barbara Ford, APRN</Name>
     <Name>Charles Wolcott, MD</Name>
     <Name>Jessica Thibodeau, APRN</Name>
-    <Name>Barbara Ford, APRN</Name>
     <Name>Jill Blumberg, MD</Name>
     <Name>Philip Lawson, MD</Name>
-    <Name>Aaron Solnit, MD</Name>
-    <Name>Alexandria Noble, APRN</Name>
-    <Name>Caitlin O'Donnell, MD</Name>
-    <Name>Danielle Beaulieu, PA</Name>
-    <Name>Evelyn Hagan, APRN</Name>
     <Name>Nicole Fischler, APRN</Name>
+    <Name>Aaron Solnit, MD</Name>
+    <Name>Loren Solnit, MD</Name>
     <Name>Sarah Young-Xu, MD</Name>
+    <Name>Alexandria Noble, APRN</Name>
+    <Name>Danielle Beaulieu, PA</Name>
+    <Name>Caitlin O'Donnell, MD</Name>
+    <Name>Evelyn Hagan, APRN</Name>
     <Name>David Nelson</Name>
+    <Name>Virginia Jeffryes, MD</Name>
+    <Name>Patricia Pratt, MD</Name>
   </Providers>
 </Settings>

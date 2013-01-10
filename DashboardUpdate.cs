@@ -81,6 +81,66 @@ namespace ProviderDashboards
             }
         }
 
+        public List<String> GetMetricsNames(string dashboardFile, int sheetNum)
+        {
+            List<String> metricsNames = new List<string>();
+
+            try
+            {
+                _dashboard = new XLWorkbook(dashboardFile);
+
+                //iterate thorugh all the dashboard sheets, and try to pull the metrics name row 
+                int numSheets = _dashboard.Worksheets.Count;
+                
+                var sheet = _dashboard.Worksheet(sheetNum);
+                metricsNames = ReturnMetricsRow(sheet);
+                
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return metricsNames;
+        }
+
+        private List<String> ReturnMetricsRow(IXLWorksheet sheet)
+        {
+            List<String> metricNames = new List<string>();
+
+            _worksheet = sheet;
+            if (_worksheet != null)
+            {
+                var firstCell = _worksheet.FirstCellUsed();
+                var lastCell = _worksheet.LastCellUsed();
+                _worksheet_range = _worksheet.Range(firstCell.Address, lastCell.Address);
+
+                if (_worksheet_range != null)
+                {
+                    int nRows = _worksheet_range.RowCount();
+                    int nCols = _worksheet_range.ColumnCount();
+                    for (int i = 1; i < nRows + 1; i++)
+                    {
+                        var row = _worksheet_range.Row(i);
+                        var newRow = _worksheet_range.Row(i + 1);
+                        string value = row.Cell(1).Value as string;
+
+                        if (value == "Month")
+                        {
+                            var metricRow = _worksheet_range.Row(i);
+                            for (int x = 1; x <= metricRow.CellCount(); x++)
+                            {
+                                metricNames.Add(metricRow.Cell(x).Value.ToString());
+                            }
+                            break;
+                        }
+                    }
+                    
+
+                }
+            }
+            return metricNames;
+        }
+
         private void prepDashboardSheets(IXLWorksheet sheet)
         {
             /*.

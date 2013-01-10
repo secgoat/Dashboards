@@ -19,6 +19,7 @@ namespace ProviderDashboards
         XMLSettings settings = new XMLSettings();
         //UpdateDashboards update;
         DashboardUpdate update;
+        List<String> _metricsNamesFromDashboard = new List<string>();
 
         String settingsFileName = "Settings.xml";
 
@@ -36,18 +37,21 @@ namespace ProviderDashboards
                 //set the data locations etc, if the existed in the config file
                 metricstextBox.Text = dataLocations[0];
                 dashboardTextBox.Text = dataLocations[1];
+               
                 foreach (String provider in providers)
                 {
                     metricsList.Items.Add(provider);
                 }
             }
-            readProvidersFromAD();
+            //open the dashboards and read out the metrics names so that we can display them in the metrics match tabs
+            // this will allow the user to open the excel file and match the field in which they want to populate the dshaboard position
+            // this will help the program match the file name and field name so it is not hardcoded by me anymore.
+            ReadProvidersFromAd();
             //update  = new UpdateDashboards();
             update = new DashboardUpdate(providers);
+            GetMetricsNamesFromDashboard();
             ADList.SelectionMode = SelectionMode.MultiExtended;
             metricsList.SelectionMode = SelectionMode.MultiExtended;
-            
-
         }
 
         private void createDashboards_Click(object sender, EventArgs e)
@@ -80,7 +84,10 @@ namespace ProviderDashboards
             settings.WriteConfigFile(dataLocations, providers);
         }
 
-        private void readProvidersFromAD()
+
+        //MY functions to facilitate populating forms etc.
+
+        private void ReadProvidersFromAd()
         {
             PrincipalContext domainName = new PrincipalContext(ContextType.Domain, "CAMPUS");
             GroupPrincipal group = GroupPrincipal.FindByIdentity(domainName, "Provider");
@@ -92,7 +99,43 @@ namespace ProviderDashboards
 
 
         }
-       
+
+        private void GetMetricsNamesFromDashboard()
+        {
+            //TODO: right now i am only trying to fill the diabetes dash metric list, need to add the logic to do all.
+            //roll the the different tabs in the dashboard 0 -5 correspond to the
+            // location of each tab: 0:diabetes, 1:Depressiojn, 2:Asthma, 3:Cardio, 4:Preventive
+            for (int i = 1; i <= 5; i++) 
+            {
+                _metricsNamesFromDashboard = update.GetMetricsNames(dataLocations[1], i);
+                foreach (string metric in _metricsNamesFromDashboard)
+                {
+                    switch (i)
+                    {
+                        case 1:
+                            diabetesDashMetrics.Items.Add(metric);
+                            break;
+                        case 2:
+                            depressionDashMetrics.Items.Add(metric);
+                            break;
+                        case 3:
+                            asthmaDashMetrics.Items.Add(metric);
+                            break;
+                        case 4:
+                            cardioDashMetrics.Items.Add(metric);
+                            break;
+                        case 5:
+                            preventiveDashMetrics.Items.Add(metric);
+                            break;
+
+                    }
+                    
+                }
+            }
+        }
+
+
+        //back to form programming
         //buttons for Active directory list
         private void addAllFromAd_Click(object sender, EventArgs e)
         {
@@ -147,5 +190,14 @@ namespace ProviderDashboards
             UpdateMetricsToXLSX change = new UpdateMetricsToXLSX();
             change.Convert(dataLocations[0]);
         }
+
+        private void emailButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        
+
+       
     }
 }

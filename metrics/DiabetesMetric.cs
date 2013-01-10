@@ -227,7 +227,7 @@ namespace ProviderDashboards.metrics
                             var value = curRow.Cell(c + xOffset).Value;
                             if (metricNumber == 0 || metricNumber == 2 || metricNumber == 13)
                             {
-                                 if (metricNumber == 13)
+                                 if (metricNumber == 13)//C
                                     metrics.Insert(1, value);
                                  else
                                     metrics.Add(value); //just need a straight number
@@ -235,16 +235,16 @@ namespace ProviderDashboards.metrics
                             else //need a p[ercent
                             {
                                 double percentValue = (double)value / 100;
-                                if (metricNumber == 10)
+                                if (metricNumber == 10)//G
                                     metrics.Insert(4, percentValue);
-                                else if (metricNumber == 11)
+                                else if (metricNumber == 11)//N
+                                    metrics.Insert(9, percentValue);
+                                else if (metricNumber == 12)//O
                                     metrics.Insert(10, percentValue);
-                                else if (metricNumber == 12)
-                                    metrics.Insert(11, percentValue);
                                
-                                else if (metricNumber == 14)
+                                else if (metricNumber == 14)//J
                                     metrics.Insert(7, percentValue);
-                                else if (metricNumber == 15)
+                                else if (metricNumber == 15)//I
                                     metrics.Insert(7, percentValue);
                                 else
                                     metrics.Add(percentValue);

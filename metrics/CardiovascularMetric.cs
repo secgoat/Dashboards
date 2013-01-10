@@ -22,8 +22,7 @@ namespace ProviderDashboards.metrics
             this.provider = provider;
             this.workbooks = workbooks;
             setmetricNames();
-             if(provider != "Jessica") //Use this to skip Jessica Thibodeau, she does not do cardiovascular stuff just family planning., but some reason she is showing up on the list with null values
-                findProvderName();
+            findProvderName();
             //use this so date is only inserted once, couldnt get it right in the find provider loops
             System.DateTime now = DateTime.Today;
             String monthYear = now.ToString("MMM-yy");
@@ -137,7 +136,12 @@ namespace ProviderDashboards.metrics
                          {
                              var value = curRow.Cell(c + xOffset).Value;
 
-                             if (metricNumber == 0)
+                             if (value == "")
+                             {
+                                 value = "blank cell";
+                                 metrics.Add(value);
+                             }
+                             else if (metricNumber == 0)
                              {
                                  metrics.Add(value); //just need a straight number
                              }

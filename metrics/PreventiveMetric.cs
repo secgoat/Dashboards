@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using ClosedXML.Excel;
 
+//TODO column C(metric 1) is the same for all providers definitely wrong, appears right for Agency.
 namespace ProviderDashboards.metrics
 {
     class PreventiveMetric
@@ -48,17 +49,17 @@ namespace ProviderDashboards.metrics
 
 
             metricNames.Add("Total # of eligible patients with a documented BMI percentile >= 85 within the past year: ");//percent (y+14) BMI
-            metricNames.Add("Total # of  of patients with a BMI percentile >= 85 who received 5-2-1-0 counseling: ");//percent (x+14) BMI
+            metricNames.Add(">= 85 who received 5-2-1-0");//percent (x+14) BMI
            
             metricNames.Add("Percent: "); //precent (x+1) CERVICAL       
             
-            metricNames.Add("Total # of eligible patients with a mammogram done in the past 2 years: ");//percent (x+12) BREAST
+            metricNames.Add("Percent:");//percent (x+1) BREAST
             
             metricNames.Add("Percent: "); //percent (x+1) COLON
             
-            metricNames.Add("# of patients 65+ years of age who received pneumococcal immunization within their lifetime:");//percent(x+14) PNEUMOCOCOAL
+            metricNames.Add("Percent:");//percent(x+2) PNEUMOCOCOAL
 
-            metricNames.Add("Total # of patients with an Advance Directive on File: "); //percent (x+3) ADVANCED DIRECTIVES 
+            metricNames.Add("Total # of patients with an Advance Directive on File: "); //percent (x+10) ADVANCED DIRECTIVES 
         }
 
         private void findProvderName()
@@ -112,11 +113,11 @@ namespace ProviderDashboards.metrics
                     break;
                 case 2:
                     metricName = metricNames[2];
-                    xOffset = 1;
+                    xOffset = 2;
                     break;
                 case 3:
                     metricName = metricNames[3];
-                    xOffset = 12;
+                    xOffset = 1;
                     break;
                 case 4:
                     metricName = metricNames[4];
@@ -124,11 +125,11 @@ namespace ProviderDashboards.metrics
                     break;
                 case 5:
                     metricName = metricNames[5];
-                    xOffset = 14;
+                    xOffset = 2;
                     break;
                 case 6:
                     metricName = metricNames[6];
-                    xOffset = 3;
+                    xOffset = 10;
                     break;
             }
 
@@ -147,13 +148,16 @@ namespace ProviderDashboards.metrics
                 lastCell = curRow.LastCellUsed();
                 for (int c = 1; c < lastCell.Address.ColumnNumber; c++)//this does too many, maybe just search for the next 10 rows?
                 {
-                    var firp = curRow.Cell(c).Value;
-                    if (firp.ToString() == metricName)
+                    var firp = curRow.Cell(c).Value.ToString();
+                    if (firp != "")
                     {
-                       var value = curRow.Cell(c + xOffset).Value;
-                        double percentValue = (double)value / 100;
-                        metrics.Add(percentValue);
-                        return;
+                        if (Strings.Match(metricName, firp))
+                        {
+                            var value = curRow.Cell(c + xOffset).Value;
+                            double percentValue = (double)value / 100;
+                            metrics.Add(percentValue);
+                            return;
+                        }
                     }
                  }
                 curRow = curRow.RowBelow();

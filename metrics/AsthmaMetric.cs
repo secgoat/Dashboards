@@ -44,7 +44,7 @@ namespace ProviderDashboards.metrics
             metricNames.Add("Total # of  patients w/ persistent or unclassified asthma with a documented Asthma Action Plan within the past year: ");//% X+18
             metricNames.Add("Total # of patients w/ persistent or unclassified asthma with an annual Asthma review: ");//% X+18
             //from Leukotrine
-            metricNames.Add("Total # of patients on an inhaled corticosteroid or leukotriene inhibitor: "); //% X+3
+            metricNames.Add("Total # of patients on an inhaled corticosteroid or leukotriene inhibitor: "); //% X+13
         }
 
         private void findProvderName()
@@ -112,7 +112,7 @@ namespace ProviderDashboards.metrics
                     break;
                 case 6:
                     metricName = metricNames[6];
-                    xOffset = 3;
+                    xOffset = 13;
                     break;
             }
 
@@ -131,8 +131,8 @@ namespace ProviderDashboards.metrics
                 lastCell = curRow.LastCellUsed();
                 for (int c = 1; c < lastCell.Address.ColumnNumber; c++)//this does too many, maybe just search for the next 10 rows?
                 {
-                    var firp = curRow.Cell(c).Value;
-                    if (firp.ToString() == metricName)
+                    var firp = curRow.Cell(c).Value.ToString();
+                    if (Strings.Match(metricName, firp))
                     {
                         var value = curRow.Cell(c + xOffset).Value;
                         if (metricNumber == 0 || metricNumber == 2)

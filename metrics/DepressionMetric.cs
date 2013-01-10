@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using ClosedXML.Excel;
 
-//TODO Agency columns K(7) is pulling a number and not a % fromt he report this may be a change that needs to happen on the report it's self
 namespace ProviderDashboards.metrics
 {
     class DepressionMetric
@@ -47,9 +46,9 @@ namespace ProviderDashboards.metrics
 
             //Depression Care Management_Major_CSD 1 Year
             metricNames.Add("Total # of patients:"); //# X+7
-            metricNames.Add("Total # of patients with a documented follow-up within 1-3 weeks:");//% X+8
-            metricNames.Add("Total # of patients with a documented SCP within the past year:");//% X+8
-            metricNames.Add("Total # of  eligible patients who have achieved remission: ");//% X+7
+            metricNames.Add("Percent of patients with a documented follow-up within 1-3 weeks:");//% X+8
+            metricNames.Add("Percent of patients with a documented SCP within the past year:");//% X+8
+            metricNames.Add("Percent of  eligible patients who have achieved remission:");//% X+7
 
             //Depression Care Management_Major_5 Point_CSD 1 Year_v2
             metricNames.Add("Percent:");//% X+1
